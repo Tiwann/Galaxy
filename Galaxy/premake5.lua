@@ -19,7 +19,7 @@ project "Galaxy"
     includedirs {
         "source",
         "external/glm",
-        "external/spdlog",
+        "external/spdlog/include",
         "../Vendor/GLFW/include",
     }
 
@@ -30,12 +30,12 @@ project "Galaxy"
 
     filter { "configurations:Debug" }
         buildoptions "/MTd"
-        defines "DEBUG"
+        defines { "DEBUG", "SPDLOG_COMPILED_LIB" }
         runtime "Debug"
         symbols "on"
 
     filter { "configurations:Release" }
         buildoptions "/MT"
-        defines "NDEBUG"
+        defines { "NDEBUG", "SPDLOG_COMPILED_LIB" }
         runtime "Release"
         optimize "on"
