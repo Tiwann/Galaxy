@@ -1,4 +1,4 @@
-@echo off
+
 
 if exist binaries (
     echo Deleting binaries directory
@@ -15,5 +15,10 @@ if exist .vs (
     rmdir /s /q .vs
 )
 
+if exist GLFW.vcxproj del GLFW.vcxproj
+if exist GLFW.vcxproj.user del GLFW.vcxproj.user
+if exist GLFW.vcxproj.filters del GLFW.vcxproj.filters
+
 echo Cleaned GLFW directory!
+
 
