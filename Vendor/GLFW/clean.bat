@@ -15,6 +15,5 @@ if exist .vs (
     rmdir /s /q .vs
 )
 
-echo Cleaned project directory!
+echo Cleaned GLFW directory!
 
-PAUSE
