@@ -18,7 +18,12 @@ project "Galaxy"
 
     includedirs {
         "source",
-        "external/glm"
+        "external/glm",
+        "../Vendor/GLFW/include"
+    }
+
+    links {
+        "GLFW"
     }
 
 
