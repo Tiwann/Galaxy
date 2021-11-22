@@ -19,8 +19,8 @@ project "Galaxy"
     includedirs {
         "source",
         "external/glm",
-        "external/spdlog"
-        "../Vendor/GLFW/include"
+        "external/spdlog",
+        "../Vendor/GLFW/include",
     }
 
     links {
