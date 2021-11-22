@@ -1,4 +1,4 @@
-project "GalaxyRenderer"
+project "Galaxy"
     kind "ConsoleApp"
     language "C++"
     cppdialect "C++20"
@@ -17,6 +17,7 @@ project "GalaxyRenderer"
     }
 
     includedirs {
+        "source",
         "external/glm"
     }
 

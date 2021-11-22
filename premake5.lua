@@ -9,4 +9,4 @@ workspace "Galaxy"
 
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
-include "GalaxyRenderer"
+include "Galaxy"
