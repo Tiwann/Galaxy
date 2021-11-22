@@ -5,7 +5,6 @@ Window::Window(std::string title, int width, int const height, bool resizable, i
     if (instance != nullptr) 
     {
         //LOG_ERROR("Cannot have two instances of Window class! Crashing.")
-
     }
     assert(instance == nullptr);
     glfwWindowHint(GLFW_VERSION_MAJOR, 4);
