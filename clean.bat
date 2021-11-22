@@ -15,9 +15,9 @@ if exist .vs (
     rmdir /s /q .vs
 )
 if exist Galaxy.sln del Galaxy.sln
-if exist GalaxyRenderer\GalaxyRenderer.vcxproj del GalaxyRenderer\GalaxyRenderer.vcxproj
-if exist GalaxyRenderer\GalaxyRenderer.vcxproj.user del GalaxyRenderer\GalaxyRenderer.vcxproj.user
-if exist GalaxyRenderer\GalaxyRenderer.vcxproj.filters del GalaxyRenderer\GalaxyRenderer.vcxproj.filters
+if exist Galaxy\Galaxy.vcxproj del Galaxy\Galaxy.vcxproj
+if exist Galaxy\Galaxy.vcxproj.user del Galaxy\Galaxy.vcxproj.user
+if exist Galaxy\Galaxy.vcxproj.filters del Galaxy\Galaxy.vcxproj.filters
 
 echo Cleaned project directory!
 
