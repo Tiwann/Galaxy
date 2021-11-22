@@ -11,3 +11,4 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 include "Galaxy"
 include "Vendor/GLFW"
+include "Vendor/GLEW"

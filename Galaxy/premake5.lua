@@ -4,8 +4,8 @@ project "Galaxy"
     cppdialect "C++20"
     staticruntime "on"
 
-    targetdir("../binaries/" .. outputdir .. "/%{prj.name}")
-    objdir("../intermediate/" .. outputdir .. "/%{prj.name}")
+    targetdir("binaries/" .. outputdir .. "/%{prj.name}")
+    objdir("intermediate/" .. outputdir .. "/%{prj.name}")
 
     files {
         "source/**.cpp",
@@ -21,10 +21,13 @@ project "Galaxy"
         "external/glm",
         "external/spdlog/include",
         "../Vendor/GLFW/include",
+        "../Vendor/GLEW/include",
     }
 
     links {
-        "GLFW"
+        "GLFW",
+        "GLEW",
+        "opengl32.lib"
     }
 
 
