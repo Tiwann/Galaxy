@@ -1,0 +1,10 @@
+.vs/
+.vs/**
+binaries/
+binaries/**
+intermediate/
+intermediate/**
+*.sln
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
