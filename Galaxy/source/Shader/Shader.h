@@ -14,7 +14,7 @@ namespace Galaxy {
 		void Link() const;
 		void UseProgram() const;
 	private:
-		std::string Read(const std::string file);
+		const char* Read(const std::string file) const;
 	};
 }
 

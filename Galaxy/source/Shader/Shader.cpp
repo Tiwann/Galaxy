@@ -7,11 +7,11 @@
 namespace Galaxy {
 	Shader::Shader(const std::string vertPath, const std::string fragPath)
 	{
-		vertSource = Read(vertPath).c_str();
-		fragSource = Read(fragPath).c_str();
+		Shader::vertSource = Shader::Read(vertPath);
+		Shader::fragSource = Shader::Read(fragPath);
 	}
 
-	std::string Shader::Read(const std::string file)
+	const char* Shader::Read(const std::string file) const
 	{
 		std::ifstream stream(file, std::ios::in);
 
@@ -23,6 +23,6 @@ namespace Galaxy {
 		ss << stream.rdbuf();
 		std::string content = ss.str();
 		stream.close();
-		return content;
+		return content.c_str();
 	}
 }
