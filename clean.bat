@@ -15,6 +15,8 @@ if exist .vs (
     rmdir /s /q .vs
 )
 
+call Vendor/GLFW/clean.bat
+
 if exist Galaxy.sln del Galaxy.sln
 if exist Galaxy\Galaxy.vcxproj del Galaxy\Galaxy.vcxproj
 if exist Galaxy\Galaxy.vcxproj.user del Galaxy\Galaxy.vcxproj.user
