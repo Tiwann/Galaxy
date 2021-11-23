@@ -1,6 +1,7 @@
 #include "Shader.h"
 #include <fstream>
 #include <format>
+#include "GL/glew.h"
 #include <iostream>
 #include <sstream>
 
@@ -9,6 +10,16 @@ namespace Galaxy {
 	{
 		Shader::vertSource = Shader::Read(vertPath);
 		Shader::fragSource = Shader::Read(fragPath);
+
+		vertID = glCreateShader(GL_VERTEX_SHADER);
+		fragID = glCreateShader(GL_FRAGMENT_SHADER);
+
+		glShaderSource(vertID, 1, &vertSource, nullptr);
+		glShaderSource(fragID, 1, &fragSource, nullptr);
+
+		programID = glCreateProgram();
+		glAttachShader(programID, vertID);
+		glAttachShader(programID, fragID);
 	}
 
 	const char* Shader::Read(const std::string file) const
