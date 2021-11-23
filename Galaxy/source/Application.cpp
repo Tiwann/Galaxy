@@ -104,12 +104,15 @@ int main() {
     glEnableVertexAttribArray(3);
     glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, 12 * sizeof(float), (void*)(10 * sizeof(float)));
 
+    vao->Unbind();
+
 
     while (!window->ShouldClose()) 
     {
         glClearColor(0.01f, 0.01f, 0.01f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
+        vao->Bind();
         shader->UseProgram();
         glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, nullptr);
 
