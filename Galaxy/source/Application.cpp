@@ -41,7 +41,7 @@ int main() {
 
     Galaxy::LOG_TRACE("Using GLFW version {}.{}", GLFW_VERSION_MAJOR, GLFW_VERSION_MINOR);
     Galaxy::LOG_TRACE("Using GLEW version {}.{}.{}", GLEW_VERSION_MAJOR, GLEW_VERSION_MINOR, GLEW_VERSION_MICRO);
-    Galaxy::LOG_TRACE("Using OpenGL: {}", glGetString(GL_VERSION));
+    Galaxy::LOG_TRACE("Using OpenGL: {}\n", glGetString(GL_VERSION));
 
     const Galaxy::Vertex verticies[] = {
         {
