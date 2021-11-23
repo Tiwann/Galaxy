@@ -30,6 +30,10 @@ project "Galaxy"
         "opengl32.lib"
     }
 
+    defines {
+        "GLEW_STATIC"
+    }
+
 
     filter { "configurations:Debug" }
         buildoptions "/MTd"
