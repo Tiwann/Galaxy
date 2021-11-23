@@ -4,6 +4,9 @@
 #include "Window/Window.h"
 #include "Renderer/Vertex.h"
 #include "Shader/Shader.h"
+#include "Renderer/VertexArray/VertexArray.h"
+#include "Renderer/VertexBuffer/VertexBuffer.h"
+#include "Renderer/IndexBuffer/IndexBuffer.h"
 
 #define GALAXY_VERSION_MAJOR 0
 #define GALAXY_VERSION_MINOR 1
@@ -45,45 +48,45 @@ int main() {
 
     const Galaxy::Vertex verticies[] = {
         {
-            .position = glm::vec3(-0.5f, -0.5f, 0.0f),
-            .color = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f),
-            .normal = glm::vec3(0.0f, 0.0f, 0.0f),
-            .texCoord = glm::vec2(0.0f, 0.0f)
+            .position   = glm::vec3(-0.5f, -0.5f, 0.0f),
+            .color      = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f),
+            .normal     = glm::vec3(0.0f, 0.0f, 0.0f),
+            .texCoord   = glm::vec2(0.0f, 0.0f)
         },
         {
-            .position = glm::vec3(0.0f, 0.5f, 0.0f),
-            .color = glm::vec4(0.0f, 1.0f, 0.0f, 1.0f),
-            .normal = glm::vec3(0.0f, 0.0f, 0.0f),
-            .texCoord = glm::vec2(0.0f, 0.0f)
+            .position   = glm::vec3(0.0f, 0.5f, 0.0f),
+            .color      = glm::vec4(0.0f, 1.0f, 0.0f, 1.0f),
+            .normal     = glm::vec3(0.0f, 0.0f, 0.0f),
+            .texCoord   = glm::vec2(0.0f, 0.0f)
         },
         {
-            .position = glm::vec3(0.5f, -0.5f, 0.0f),
-            .color = glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
-            .normal = glm::vec3(0.0f, 0.0f, 0.0f),
-            .texCoord = glm::vec2(0.0f, 0.0f)
+            .position   = glm::vec3(0.5f, -0.5f, 0.0f),
+            .color      = glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
+            .normal     = glm::vec3(0.0f, 0.0f, 0.0f),
+            .texCoord   = glm::vec2(0.0f, 0.0f)
         }
     };
 
     unsigned int indices[] = { 0, 1, 2 };
 
-    // Create vao, vbo, ibo
-    unsigned int vao;
-    unsigned int vbo;
-    unsigned int ibo;
-
-    glGenVertexArrays(1, &vao);
-    glGenBuffers(1, &vbo);
-    glGenBuffers(1, &ibo);
-
-    glBindVertexArray(vao);
-
-    Galaxy::Shader* shader = new Galaxy::Shader("Main/Main.vert", "Main/Main.frag");
+    Galaxy::Shader* shader = Galaxy::Shader::Create("Main/Main.vert", "Main/Main.frag");
     shader->Compile();
     shader->Link();
     shader->Delete();
 
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(verticies), verticies, GL_STATIC_DRAW);
+    // Create vao, vbo, ibo
+    Galaxy::VertexArray* vao    = Galaxy::VertexArray::Create();
+    Galaxy::VertexBuffer* vbo   = Galaxy::VertexBuffer::Create();
+    Galaxy::IndexBuffer* ibo    = Galaxy::IndexBuffer::Create();
+
+    vao->Bind();
+
+    vbo->Bind();
+    vbo->SetData(sizeof(verticies), verticies);
+
+    ibo->Bind();
+    ibo->SetData(sizeof(indices), indices);
+
 
     // Position Attribute
     glEnableVertexAttribArray(0);
@@ -100,10 +103,6 @@ int main() {
     // TexCoord Attribute
     glEnableVertexAttribArray(3);
     glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, 12 * sizeof(float), (void*)(10 * sizeof(float)));
-
-
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
 
     while (!window->ShouldClose()) 
