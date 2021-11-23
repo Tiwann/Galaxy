@@ -114,6 +114,11 @@ namespace Galaxy {
 		glUseProgram(programID);
 	}
 
+	Shader* Shader::Create(const std::string vertPath, const std::string fragPath)
+	{
+		return new Shader(vertPath, fragPath);
+	}
+
 	void Shader::PrintSource()
 	{
 		std::cout << vertSource << std::endl;

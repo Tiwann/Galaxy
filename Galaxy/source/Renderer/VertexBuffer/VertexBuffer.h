@@ -1,12 +1,17 @@
 #pragma once
 
-class VertexBuffer
+namespace Galaxy 
 {
-private:
-	unsigned int ID;
-public:
-	VertexBuffer(GLsizeiptr size, const void* data);
-	void Bind() const;
-	void Unbind() const;
-};
+	class VertexBuffer
+	{
+	private:
+		unsigned int ID;
+		VertexBuffer();
+	public:
+		static VertexBuffer* Create();
+		void SetData(GLsizeiptr size, const void* data);
+		void Bind() const;
+		void Unbind() const;
+	};
+}
 
