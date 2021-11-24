@@ -91,6 +91,9 @@ int main() {
     ibo->Bind();
     ibo->SetData(sizeof(indices), indices);
 
+    Galaxy::LOG_TRACE(sizeof(glm::fvec3));
+
+
 
     // Position Attribute
     glEnableVertexAttribArray(0);

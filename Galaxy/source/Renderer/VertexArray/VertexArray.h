@@ -1,4 +1,5 @@
 #pragma once
+#include <glm/glm.hpp>
 
 namespace Galaxy 
 {
@@ -7,12 +8,18 @@ namespace Galaxy
 	private:
 		unsigned int ID;
 		VertexArray();
+		uint16_t attribcount;
+		uint16_t stride;
+		uint16_t offset;
+	
 	public:
 		static VertexArray* Create();
 	
 		void Bind() const;
 		void Unbind() const;
-		//void AddBuffer(const VertexBuffer& vbo, const VertexBufferLayout& layout);
+
+		template<class T>
+		void AddAttribPointer();
 	};
 }
 
