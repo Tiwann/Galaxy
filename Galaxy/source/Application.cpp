@@ -7,6 +7,7 @@
 #include "Renderer/VertexArray/VertexArray.h"
 #include "Renderer/VertexBuffer/VertexBuffer.h"
 #include "Renderer/IndexBuffer/IndexBuffer.h"
+#include "Utils/ObjParser/ObjParser.h"
 
 #define GALAXY_VERSION_MAJOR 0
 #define GALAXY_VERSION_MINOR 1
@@ -87,6 +88,7 @@ int main() {
     ibo->Bind();
     ibo->SetData(sizeof(indices), indices);
 
+    auto obj = Galaxy::ObjParser::ParseFile("Assets/Models/sphere.obj");
 
     // Position Attribute
     glEnableVertexAttribArray(0);
