@@ -18,8 +18,7 @@ namespace Galaxy
 		void Bind() const;
 		void Unbind() const;
 
-		template<class T>
-		void AddAttribPointer();
+		
 	};
 }
 
