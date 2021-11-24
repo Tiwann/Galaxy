@@ -1,4 +1,5 @@
 #pragma once
+#include "Renderer/Vertex.h"
 
 namespace Galaxy 
 {
@@ -10,6 +11,7 @@ namespace Galaxy
 	public:
 		static VertexBuffer* Create();
 		void SetData(GLsizeiptr size, const void* data);
+		void SetData(Vertices vertices);
 		void Bind() const;
 		void Unbind() const;
 	};
