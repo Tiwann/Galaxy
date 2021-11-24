@@ -47,24 +47,27 @@ int main() {
     Galaxy::LOG_TRACE("Using GLEW version {}.{}.{}", GLEW_VERSION_MAJOR, GLEW_VERSION_MINOR, GLEW_VERSION_MICRO);
     Galaxy::LOG_TRACE("Using OpenGL: {}\n", glGetString(GL_VERSION));
 
-    const Galaxy::Vertex verticies[] = {
+    Galaxy::ObjData cubeobj = Galaxy::ObjParser::ParseFile("Assets/Models/cube.obj");
+    Galaxy::Vertices cube = Galaxy::ObjParser::DataToVertices(cubeobj);
+
+    const Galaxy::Vertices vertices = {
         {
             .position   = glm::vec3(-0.5f, -0.5f, 0.0f),
-            .color      = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f),
+            .texCoord   = glm::vec2(0.0f, 0.0f),
             .normal     = glm::vec3(0.0f, 0.0f, 0.0f),
-            .texCoord   = glm::vec2(0.0f, 0.0f)
+            .color      = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f),
         },
         {
             .position   = glm::vec3(0.0f, 0.5f, 0.0f),
-            .color      = glm::vec4(0.0f, 1.0f, 0.0f, 1.0f),
+            .texCoord   = glm::vec2(0.0f, 0.0f),
             .normal     = glm::vec3(0.0f, 0.0f, 0.0f),
-            .texCoord   = glm::vec2(0.0f, 0.0f)
+            .color      = glm::vec4(0.0f, 1.0f, 0.0f, 1.0f),
         },
         {
             .position   = glm::vec3(0.5f, -0.5f, 0.0f),
-            .color      = glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
+            .texCoord   = glm::vec2(0.0f, 0.0f),
             .normal     = glm::vec3(0.0f, 0.0f, 0.0f),
-            .texCoord   = glm::vec2(0.0f, 0.0f)
+            .color      = glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
         }
     };
 
@@ -83,28 +86,29 @@ int main() {
     vao->Bind();
 
     vbo->Bind();
-    vbo->SetData(sizeof(verticies), verticies);
+    vbo->SetData(vertices);
 
     ibo->Bind();
     ibo->SetData(sizeof(indices), indices);
 
-    auto obj = Galaxy::ObjParser::ParseFile("Assets/Models/sphere.obj");
 
     // Position Attribute
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 12 * sizeof(float), (void*)0);
 
-    // Color Attribute
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 12 * sizeof(float), (void*)(3 * sizeof(float)));
+    // TexCoord Attribute
+    glEnableVertexAttribArray(3);
+    glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, 12 * sizeof(float), (void*)(3 * sizeof(float)));
 
     // Normal attribute
     glEnableVertexAttribArray(2);
-    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 12 * sizeof(float), (void*)(7 * sizeof(float)));
+    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 12 * sizeof(float), (void*)(5 * sizeof(float)));
 
-    // TexCoord Attribute
-    glEnableVertexAttribArray(3);
-    glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, 12 * sizeof(float), (void*)(10 * sizeof(float)));
+    // Color Attribute
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 12 * sizeof(float), (void*)(8 * sizeof(float)));
+
+
 
     vao->Unbind();
 
