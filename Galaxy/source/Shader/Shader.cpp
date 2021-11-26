@@ -91,7 +91,7 @@ namespace Galaxy {
 
 		if (linked == GL_TRUE)
 		{
-			LOG_INFO("[SHADER] Shader program successfully linked!");
+			LOG_INFO("[SHADER] Shader program successfully linked!\n");
 			Shader::isLinked = true;
 		}
 		else
@@ -107,9 +107,11 @@ namespace Galaxy {
 
 	void Shader::UseProgram() const
 	{
+		
 		if (!Shader::isLinked)
 		{
 			LOG_ERROR("[SHADER] An error occured, cannot use this shader.");
+			assert(Shader::isLinked);
 		}
 		glUseProgram(programID);
 	}

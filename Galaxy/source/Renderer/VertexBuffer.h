@@ -1,5 +1,6 @@
 #pragma once
 #include "Renderer/Vertex.h"
+#include "GL/glew.h"
 
 namespace Galaxy 
 {

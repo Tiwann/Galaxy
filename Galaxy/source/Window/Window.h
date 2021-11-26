@@ -30,5 +30,6 @@ namespace Galaxy {
         int GetWidth() const { return width; }
         int GetHeight() const { return height; }
 
+
     };
 }

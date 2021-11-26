@@ -5,7 +5,7 @@
 
 namespace Galaxy
 {
-    Texture2D::Texture2D(const std::string file, uint32_t slot, uint32_t format, TextureParameters params)
+    Texture2D::Texture2D(const std::string file, const TextureParams params)
     {       
         this->slot = slot;
         stbi_set_flip_vertically_on_load(true);
@@ -15,12 +15,12 @@ namespace Galaxy
         glActiveTexture(this->slot);
         glBindTexture(this->slot, ID);
 
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, params.filter.x);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, params.filter.y);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, params.wrap.x);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, params.wrap.y);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, params.filter);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, params.filter);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, params.wrap);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, params.wrap);
 
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, format, GL_UNSIGNED_BYTE, data);
+        glTexImage2D(GL_TEXTURE_2D, 0, params.format, width, height, 0, params.format, GL_UNSIGNED_BYTE, data);
         glGenerateMipmap(GL_TEXTURE_2D);
 
         glBindTexture(this->slot, 0);
@@ -28,9 +28,9 @@ namespace Galaxy
         LOG_TRACE("[TEXTURE2D]-----Width: {} | Height: {}", width, height);
     }
 
-    Texture2D* Galaxy::Texture2D::Create(const std::string file, uint32_t slot, uint32_t format, TextureParameters params)
+    Texture2D* Galaxy::Texture2D::Create(const std::string file, TextureParams params)
     {
-        return new Texture2D(file, slot, format, params);
+        return new Texture2D(file, params);
     }
 
     void Texture2D::Bind() const

@@ -5,11 +5,17 @@
 
 namespace Galaxy {
 	
-	struct TextureParameters 
+	/// <summary>
+	/// Define several parameters for texture creation
+	/// </summary>
+	struct TextureParams
 	{
-		glm::ivec2 filter;
-		glm::ivec2 wrap;
+		uint32_t slot;		// GL_TEXTUREX
+		uint32_t format;	// GL_RGBA
+		uint32_t filter;	// GL_NEAREST | GL_LINEAR
+		uint32_t wrap;		// GL_REPEAT
 	};
+
 
 	class Texture2D
 	{
@@ -18,9 +24,9 @@ namespace Galaxy {
 		uint32_t slot;
 		int width, height, channels;
 		unsigned char* data;
-		Texture2D(const std::string file, uint32_t slot, uint32_t format, TextureParameters params);
+		Texture2D(const std::string file, const TextureParams params);
 	public:
-		static Texture2D* Create(const std::string file, uint32_t slot, uint32_t format, TextureParameters params);
+		static Texture2D* Create(const std::string file, const TextureParams params);
 		void Bind() const;
 		void Unbind() const;
 		void Delete() const;

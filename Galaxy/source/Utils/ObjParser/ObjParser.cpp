@@ -46,7 +46,7 @@ namespace Galaxy
             {
                 ocount++;
                 line = line.substr(2, line.size());
-                data.objects.push_back(line);               
+                data.objects.push_back(line);          
             }
 
             if (line[0] == 'v' && line[1] == ' ')
@@ -95,13 +95,13 @@ namespace Galaxy
         }
         stream.close();
 
-        LOG_TRACE("[OBJPARSER]-------Name:  {}", data.objects[0]);
         LOG_TRACE("[OBJPARSER]---Comments:  {}", hcount);
         LOG_TRACE("[OBJPARSER]----Objects:  {}", ocount);
         LOG_TRACE("[OBJPARSER]---Vertices:  {}", vcount);
         LOG_TRACE("[OBJPARSER]--TexCoords:  {}", vtcount);
         LOG_TRACE("[OBJPARSER]----Normals:  {}", vncount);
         LOG_TRACE("[OBJPARSER]------Faces:  {}", fcount);
+        LOG_TRACE("[OBJPARSER] Finished parsing .obj file!");
         return data;
     }
 
@@ -122,7 +122,7 @@ namespace Galaxy
             out_glindices.push_back(objdata.indices[i].x - 1);
         }
         
-        LOG_TRACE("[OBJPARSER] Converted Obj data to array of vertices.");
+        LOG_TRACE("[OBJPARSER] Converting .obj data to std::vector<Vertex>.\n");
         return vertices;
     }
 
@@ -140,7 +140,7 @@ namespace Galaxy
             };
         }
 
-        LOG_TRACE("[OBJPARSER] Converted Obj data to array of vertices.");
+        LOG_TRACE("[OBJPARSER] Converting .obj data to std::vector<Vertex>.\n");
         return vertices;
     }
 }

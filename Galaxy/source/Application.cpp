@@ -2,11 +2,11 @@
 #include <glfw/glfw3.h>
 #include "Log/Log.h"
 #include "Window/Window.h"
-#include "Renderer/Vertex.h"
 #include "Shader/Shader.h"
-#include "Renderer/VertexArray/VertexArray.h"
-#include "Renderer/VertexBuffer/VertexBuffer.h"
-#include "Renderer/IndexBuffer/IndexBuffer.h"
+#include "Renderer/Vertex.h"
+#include "Renderer/VertexArray.h"
+#include "Renderer/VertexBuffer.h"
+#include "Renderer/IndexBuffer.h"
 #include "Utils/ObjParser/ObjParser.h"
 #include "stb/stb_image.h"
 #include "Texture/Texture2D.h"
@@ -74,11 +74,14 @@ int main() {
     //
     //unsigned int indices[] = { 0, 2, 1, 0, 3, 2 };
 
-    Galaxy::Vertices cube = Galaxy::ObjParser::ParseFileToVertices("Assets/Models/cube.obj");
+    Galaxy::Vertices cube = Galaxy::ObjParser::ParseFileToVertices("Assets/Models/superleaf.obj");
     Galaxy::Shader* shader = Galaxy::Shader::Create("Main/Main.vert", "Main/Main.frag");
     shader->Compile();
     shader->Link();
     shader->Delete();
+
+    Galaxy::Texture2D* texture = Galaxy::Texture2D::Create("Assets/Textures/superleaf.png", { GL_TEXTURE0, GL_RGBA, GL_NEAREST, GL_REPEAT });
+    texture->SetUniformData(shader, "tex0", 0);
 
     // Create vao, vbo, ibo
     Galaxy::VertexArray* vao    = Galaxy::VertexArray::Create();
@@ -110,9 +113,8 @@ int main() {
     glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, 12 * sizeof(float), (void*)(8 * sizeof(float)));
 
 
+
     
-    Galaxy::Texture2D* texture = Galaxy::Texture2D::Create("Assets/Textures/minecraft_sand.png", GL_TEXTURE0, GL_RGBA, { glm::ivec2(GL_NEAREST), glm::ivec2(GL_REPEAT) });
-    texture->SetUniformData(shader, "tex0", 0);
     float rotation = 0.0f;
     double oldTime = glfwGetTime();
     while (!window->ShouldClose()) 
@@ -137,7 +139,7 @@ int main() {
         glm::mat4 projection = glm::mat4(1.0f);
 
         model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 1.0, 0.0f));
-        view = glm::translate(view, glm::vec3(0.0f, 0.0, -10.0f));
+        view = glm::translate(view, glm::vec3(0.0f, 0.0, -5.0f));
         projection = glm::perspective(glm::radians(45.0f), (float)(window->GetWidth() / window->GetHeight()), 0.1f, 100.0f);
 
         int modelLoc = glGetUniformLocation(shader->GetProgram(), "model");
@@ -150,12 +152,12 @@ int main() {
         glUniformMatrix4fv(projectionLoc, 1, false, glm::value_ptr(projection));
 
         //glDrawElements(GL_TRIANGLES, sizeof(indices) / sizeof(unsigned int), GL_UNSIGNED_INT, nullptr);
-        glDrawArrays(GL_TRIANGLES, 0, cube.size());
+        glDrawArrays(GL_TRIANGLES, 0, (int)cube.size());
         // Swap back and front buffers
         window->SwapBuffers();
         glfwPollEvents();
     }
-
+    
 
     
     glfwTerminate();
