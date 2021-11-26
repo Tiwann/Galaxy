@@ -20,6 +20,7 @@ project "Galaxy"
         "source",
         "external/glm",
         "external/spdlog/include",
+        "external/stb",
         "../Vendor/GLFW/include",
         "../Vendor/GLEW/include",
     }
