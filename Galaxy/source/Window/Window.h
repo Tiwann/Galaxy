@@ -10,6 +10,7 @@ namespace Galaxy {
     private:
         GLFWwindow* window;
         inline static Window* instance = nullptr;
+        int width, height;
         Window(std::string title, int width, int const height, bool resizable = true, int samples = 4);
     public:
 
@@ -26,5 +27,8 @@ namespace Galaxy {
         void SwapBuffers()                  const { glfwSwapBuffers(window); }
         void SetTitle(std::string newTitle) const { glfwSetWindowTitle(window, newTitle.c_str()); }
         void SetVSyncEnabled(bool enabled)  const { glfwSwapInterval(enabled); }
+        int GetWidth() const { return width; }
+        int GetHeight() const { return height; }
+
     };
 }

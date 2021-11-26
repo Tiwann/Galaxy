@@ -95,13 +95,13 @@ namespace Galaxy
         }
         stream.close();
 
-        //std::cout << "[OBJPARSER]-------Name:  " << names[0] << std::endl;
-        //std::cout << "[OBJPARSER]---Comments:  " << hcount << std::endl;
-        //std::cout << "[OBJPARSER]----Objects:  " << ocount << std::endl;
-        //std::cout << "[OBJPARSER]---Vertices:  " << vcount << std::endl;
-        //std::cout << "[OBJPARSER]--TexCoords:  " << vtcount << std::endl;
-        //std::cout << "[OBJPARSER]----Normals:  " << vncount << std::endl;
-        //std::cout << "[OBJPARSER]------Faces:  " << fcount << std::endl;
+        LOG_TRACE("[OBJPARSER]-------Name:  {}", data.objects[0]);
+        LOG_TRACE("[OBJPARSER]---Comments:  {}", hcount);
+        LOG_TRACE("[OBJPARSER]----Objects:  {}", ocount);
+        LOG_TRACE("[OBJPARSER]---Vertices:  {}", vcount);
+        LOG_TRACE("[OBJPARSER]--TexCoords:  {}", vtcount);
+        LOG_TRACE("[OBJPARSER]----Normals:  {}", vncount);
+        LOG_TRACE("[OBJPARSER]------Faces:  {}", fcount);
         return data;
     }
 
@@ -122,7 +122,7 @@ namespace Galaxy
             out_glindices.push_back(objdata.indices[i].x - 1);
         }
         
-        
+        LOG_TRACE("[OBJPARSER] Converted Obj data to array of vertices.");
         return vertices;
     }
 
@@ -140,7 +140,7 @@ namespace Galaxy
             };
         }
 
-
+        LOG_TRACE("[OBJPARSER] Converted Obj data to array of vertices.");
         return vertices;
     }
 }
