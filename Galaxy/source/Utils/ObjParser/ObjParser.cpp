@@ -106,9 +106,30 @@ namespace Galaxy
     }
 
     
+    Vertices ObjParser::DataToVertices(const ObjData objdata, std::vector<unsigned int>& out_glindices)
+    {
+        Vertices vertices = Vertices(objdata.indices.size());
+        out_glindices = std::vector<uint>();
+
+        for (uint i = 0; i < objdata.indices.size(); i++)
+        {
+            vertices[i] = {
+            .position = objdata.positions[objdata.indices[i].x - 1],
+            .texCoord = objdata.texCoords[objdata.indices[i].y - 1],
+            .normal = objdata.normals[objdata.indices[i].z - 1],
+            .color = glm::fvec4(1.0)
+            };
+            out_glindices.push_back(objdata.indices[i].x - 1);
+        }
+        
+        
+        return vertices;
+    }
+
     Vertices ObjParser::DataToVertices(const ObjData objdata)
     {
         Vertices vertices = Vertices(objdata.indices.size());
+
         for (uint i = 0; i < objdata.indices.size(); i++)
         {
             vertices[i] = {
@@ -118,6 +139,8 @@ namespace Galaxy
             .color = glm::fvec4(1.0)
             };
         }
+
+
         return vertices;
     }
 }

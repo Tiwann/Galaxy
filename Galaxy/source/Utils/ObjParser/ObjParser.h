@@ -24,6 +24,7 @@ namespace Galaxy
 	public:
 		static ObjData ParseFile(const std::string filepath);
 		static Vertices DataToVertices(const ObjData objdata);
+		static Vertices DataToVertices(const ObjData objdata, std::vector<unsigned int>& out_glindices);
 	};
 }
 
