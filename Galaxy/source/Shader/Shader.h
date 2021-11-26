@@ -20,6 +20,7 @@ namespace Galaxy {
 		Shader(const std::string vertPath, const std::string fragPath);
 	public:
 		static Shader* Create(const std::string vertPath, const std::string fragPath);
+		uint32_t GetProgram() const { return programID; }
 		void PrintSource();
 		void Compile();
 		void Link();
