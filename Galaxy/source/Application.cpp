@@ -1,15 +1,14 @@
 #include <GL/glew.h>
 #include <glfw/glfw3.h>
-#include "Log/Log.h"
-#include "Window/Window.h"
-#include "Shader/Shader.h"
-#include "Renderer/Vertex.h"
-#include "Renderer/VertexArray.h"
-#include "Renderer/VertexBuffer.h"
-#include "Renderer/IndexBuffer.h"
-#include "Utils/ObjParser/ObjParser.h"
-#include "stb/stb_image.h"
-#include "Texture/Texture2D.h"
+#include "Log.h"
+#include "Window.h"
+#include "Shader.h"
+#include "Vertex.h"
+#include "VertexArray.h"
+#include "VertexBuffer.h"
+#include "IndexBuffer.h"
+#include "ObjParser.h"
+#include "Texture2D.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
@@ -21,17 +20,17 @@ int main() {
     
     Galaxy::LOG_TRACE("Welcome to Galaxy Renderer version {}.{}!", GALAXY_VERSION_MAJOR, GALAXY_VERSION_MINOR);
 
-    Galaxy::Window* window = Galaxy::Window::Create("Galaxy Renderer", 600, 600, false, 16);
+    Galaxy::Window window = Galaxy::Window("Galaxy Renderer", 600, 600, false, 16);
     
   
     
-    if (!window->GetWindow()) {
+    if (!window.GetWindow()) {
         Galaxy::LOG_ERROR("Failed to create a window.");
         return -1;
     }
 
-    window->MakeContextCurrent();
-    window->SetVSyncEnabled(true);
+    window.MakeContextCurrent();
+    window.SetVSyncEnabled(true);
 
     if (glewInit() != GLEW_OK) {
         Galaxy::LOG_ERROR("Couldn't initalize GLEW.");
@@ -45,25 +44,24 @@ int main() {
     Galaxy::LOG_TRACE("Using GLEW version {}.{}.{}", GLEW_VERSION_MAJOR, GLEW_VERSION_MINOR, GLEW_VERSION_MICRO);
     Galaxy::LOG_TRACE("Using OpenGL: {}\n", glGetString(GL_VERSION));
 
-
+    
     Galaxy::Vertices cube = Galaxy::ObjParser::ParseFileToVertices("Assets/Models/superleaf.obj");
-    auto shader = Galaxy::Shader::Create("Main/Main.vert", "Main/Main.frag");
-    shader->Compile();
-    shader->Link();
-    shader->Delete();
+    Galaxy::Shader shader = Galaxy::Shader("Main/Main.vert", "Main/Main.frag");
+    shader.Compile();
+    shader.Link();
+    shader.Delete();
 
-    auto texture = Galaxy::Texture2D::Create("Assets/Textures/superleaf.png", GL_TEXTURE0, Galaxy::TextureParams::Default);
-    texture->SetUniformData(shader, "tex0", 0);
+    Galaxy::Texture2D texture = Galaxy::Texture2D("Assets/Textures/superleaf.png", GL_TEXTURE0, Galaxy::TextureParams::Default);
+    texture.SetUniformData(shader, "tex0", 0);
 
     // Create vao, vbo, ibo
-    auto vao  = Galaxy::VertexArray::Create();
-    auto vbo = Galaxy::VertexBuffer::Create();
-    auto ibo  = Galaxy::IndexBuffer::Create();
+    Galaxy::VertexArray vao; 
+    Galaxy::VertexBuffer vbo;
+    Galaxy::IndexBuffer ibo;
 
-    vao->Bind();
-
-    vbo->Bind();
-    vbo->SetData(cube);
+    vao.Bind();     
+    vbo.Bind();
+    vbo.SetData(cube);
 
 
     // Position Attribute
@@ -87,7 +85,7 @@ int main() {
     
     float rotation = 0.0f;
     double oldTime = glfwGetTime();
-    while (!window->ShouldClose()) 
+    while (!window.ShouldClose()) 
     {
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -101,8 +99,8 @@ int main() {
         }
 
 
-        shader->UseProgram();      
-        texture->Bind();
+        shader.UseProgram();      
+        texture.Bind();
 
         glm::mat4 model = glm::mat4(1.0f);
         glm::mat4 view = glm::mat4(1.0f);
@@ -110,21 +108,21 @@ int main() {
 
         model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 1.0, 0.0f));
         view = glm::translate(view, glm::vec3(0.0f, 0.0, -5.0f));
-        projection = glm::perspective(glm::radians(45.0f), (float)(window->GetWidth() / window->GetHeight()), 0.1f, 100.0f);
+        projection = glm::perspective(glm::radians(45.0f), (float)(window.GetWidth() / window.GetHeight()), 0.1f, 100.0f);
 
-        int modelLoc = glGetUniformLocation(shader->GetProgram(), "model");
+        int modelLoc = glGetUniformLocation(shader.GetProgram(), "model");
         glUniformMatrix4fv(modelLoc, 1, false, glm::value_ptr(model));
 
-        int viewlLoc = glGetUniformLocation(shader->GetProgram(), "view");
+        int viewlLoc = glGetUniformLocation(shader.GetProgram(), "view");
         glUniformMatrix4fv(viewlLoc, 1, false, glm::value_ptr(view));
 
-        int projectionLoc = glGetUniformLocation(shader->GetProgram(), "projection");
+        int projectionLoc = glGetUniformLocation(shader.GetProgram(), "projection");
         glUniformMatrix4fv(projectionLoc, 1, false, glm::value_ptr(projection));
 
         //glDrawElements(GL_TRIANGLES, sizeof(indices) / sizeof(unsigned int), GL_UNSIGNED_INT, nullptr);
         glDrawArrays(GL_TRIANGLES, 0, (int)cube.size());
         // Swap back and front buffers
-        window->SwapBuffers();
+        window.SwapBuffers();
         glfwPollEvents();
     }
     

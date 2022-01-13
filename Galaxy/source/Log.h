@@ -17,7 +17,7 @@ namespace Galaxy {
 	class Log
 	{
 	private:
-		static std::shared_ptr<spdlog::logger> _coreLogger;
+		inline static std::shared_ptr<spdlog::logger> _coreLogger;
 	public:
 		static void Init();
 		inline static std::shared_ptr<spdlog::logger>& GetLogger() { return _coreLogger; }

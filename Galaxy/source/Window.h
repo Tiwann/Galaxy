@@ -2,6 +2,7 @@
 #include "GLFW/glfw3.h"
 #include <assert.h>
 #include <string>
+#include <memory>
 
 namespace Galaxy {
 
@@ -11,11 +12,8 @@ namespace Galaxy {
         GLFWwindow* window;
         inline static Window* instance = nullptr;
         int width, height;
-        Window(std::string title, int width, int const height, bool resizable = true, int samples = 4);
     public:
-
-        /* Constructor */
-        static Window* Create(std::string title, int width, int const height, bool resizable, int samples);
+        Window(std::string title, int width, int const height, bool resizable = true, int samples = 4);
 
         /* Functions */
         GLFWwindow* GetWindow() const { assert(window != nullptr); return window; }

@@ -18,9 +18,8 @@ namespace Galaxy {
 
 		bool isCompiled;
 		bool isLinked;
-		Shader(const std::string& vertPath, const std::string& fragPath);
 	public:
-		static std::shared_ptr<Shader> Create(const std::string& vertPath, const std::string& fragPath);
+		Shader(const std::string& vertPath, const std::string& fragPath);
 		uint32_t GetProgram() const { return programID; }
 		void PrintSource();
 		void Compile();

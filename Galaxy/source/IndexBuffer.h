@@ -1,19 +1,17 @@
 #pragma once
-#include "Renderer/Vertex.h"
 #include "GL/glew.h"
 #include <memory>
 
-namespace Galaxy 
+namespace Galaxy
 {
-	class VertexBuffer
+	class IndexBuffer
 	{
 	private:
 		uint32_t ID;
-		VertexBuffer();
 	public:
-		static std::shared_ptr<VertexBuffer> Create();
+		IndexBuffer();
+
 		void SetData(GLsizeiptr size, const void* data);
-		void SetData(Vertices vertices);
 		void Bind() const;
 		void Unbind() const;
 	};

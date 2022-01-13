@@ -3,8 +3,6 @@
 
 
 namespace Galaxy {
-	std::shared_ptr<spdlog::logger> Log::_coreLogger;
-
 	void Log::Init()
 	{
 		spdlog::set_pattern("%^[%T]: %v%$");

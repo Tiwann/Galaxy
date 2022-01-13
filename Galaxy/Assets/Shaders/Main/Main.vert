@@ -5,7 +5,6 @@ layout(location = 1) in vec2 v_texcoord;
 layout(location = 2) in vec3 v_normal;
 layout(location = 3) in vec4 v_color;
 
-
 out vec2 texcoord;
 out vec4 vcolor;
 

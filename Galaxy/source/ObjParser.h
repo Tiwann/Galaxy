@@ -4,7 +4,7 @@
 #include <string>
 #include <glm/glm.hpp>
 
-#include "Renderer/Vertex.h"
+#include "Vertex.h"
 
 
 namespace Galaxy 

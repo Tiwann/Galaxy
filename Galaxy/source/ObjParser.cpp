@@ -1,7 +1,7 @@
 #include "ObjParser.h"
 #include <fstream>
 #include <iostream>
-#include "Log/Log.h"
+#include "Log.h"
 
 namespace Galaxy 
 {

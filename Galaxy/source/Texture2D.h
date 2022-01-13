@@ -3,7 +3,7 @@
 #include <glm/glm.hpp>
 #include <string>
 #include <memory>
-#include "Shader/Shader.h"
+#include "Shader.h"
 
 namespace Galaxy {
 	
@@ -28,14 +28,13 @@ namespace Galaxy {
 		TextureParams params;
 		int width, height, channels;
 		unsigned char* data;
-		Texture2D(const std::string file, int32_t slot, const TextureParams& params);
 
 	public:
-		static std::shared_ptr<Texture2D> Create(const std::string file, int32_t slot, const TextureParams& params);
+		Texture2D(const std::string file, int32_t slot, const TextureParams& params);
 		void Bind() const;
 		void Unbind() const;
 		void Delete() const;
-		void SetUniformData(std::shared_ptr<Shader> shader, const std::string uniform, uint32_t unit) const;
+		void SetUniformData(Shader& shader, const std::string uniform, uint32_t unit) const;
 
 		const int32_t GetWidth() const { return width; }
 		const int32_t GetHeight() const { return height; }

@@ -1,13 +1,15 @@
 #include "Shader.h"
+#include "GL/glew.h"
+#include "Log.h"
+
 #include <fstream>
 #include <format>
-#include "GL/glew.h"
-#include <iostream>
 #include <sstream>
-#include "Log/Log.h"
 
 namespace Galaxy {
 	Shader::Shader(const std::string& vertFile, const std::string& fragFile)
+		: vertSource(""), fragSource(""), vertPath(""), fragPath(""), 
+		vertID(0), fragID(0), programID(0), isLinked(false), isCompiled(false)
 	{
 		vertPath = std::format("Assets/Shaders/{}", vertFile);
 		fragPath = std::format("Assets/Shaders/{}", fragFile);
@@ -27,9 +29,6 @@ namespace Galaxy {
 		programID = glCreateProgram();
 		glAttachShader(programID, vertID);
 		glAttachShader(programID, fragID);
-
-		delete vs;
-		delete fs;
 	}
 
 	void Shader::Compile()
@@ -110,7 +109,6 @@ namespace Galaxy {
 
 	void Shader::UseProgram() const
 	{
-		
 		if (!Shader::isLinked)
 		{
 			LOG_ERROR("[SHADER] An error occured, cannot use this shader.");
@@ -119,15 +117,10 @@ namespace Galaxy {
 		glUseProgram(programID);
 	}
 
-	std::shared_ptr<Shader> Shader::Create(const std::string& vertPath, const std::string& fragPath)
-	{
-		return std::make_shared<Shader>(Shader(vertPath, fragPath));
-	}
-
 	void Shader::PrintSource()
 	{
-		std::cout << vertSource << std::endl;
-		std::cout << fragSource << std::endl;
+		LOG_TRACE(vertSource);
+		LOG_TRACE(fragSource);
 	}
 
 	std::string Shader::Read(const std::string& file)

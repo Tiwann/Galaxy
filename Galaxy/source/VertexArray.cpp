@@ -4,15 +4,11 @@
 namespace Galaxy 
 {
 	VertexArray::VertexArray()
+		: ID(0), attribcount(0), stride(0), offset(0)
 	{
 		glGenVertexArrays(1, &ID);
 		attribcount = 0;
 		stride = 0;
-	}
-
-	std::shared_ptr<VertexArray> VertexArray::Create()
-	{
-		return std::make_shared<VertexArray>(VertexArray());
 	}
 
 	void VertexArray::Bind() const

@@ -1,7 +1,7 @@
 #include "Texture2D.h"
 #include <GL/glew.h>
 #include <stb/stb_image.h>
-#include <Log/Log.h>
+#include "Log.h"
 #include <fstream>
 
 
@@ -42,11 +42,6 @@ namespace Galaxy
         glBindTexture(GL_TEXTURE_2D, 0);
     }
 
-    std::shared_ptr<Texture2D> Texture2D::Create(const std::string file, int32_t slot, const TextureParams& params)
-    {
-        return std::make_shared<Texture2D>(Texture2D(file, slot, params));
-    }
-
     void Texture2D::Bind() const
     {
         glBindTexture(GL_TEXTURE_2D, ID);
@@ -62,10 +57,10 @@ namespace Galaxy
         glDeleteTextures(1, &ID);
     }
 
-    void Texture2D::SetUniformData(std::shared_ptr<Shader> shader, const std::string uniform, uint32_t unit) const
+    void Texture2D::SetUniformData(Shader& shader, const std::string uniform, uint32_t unit) const
     {
-        uint32_t texuni = glGetUniformLocation(shader->GetProgram(), uniform.c_str());
-        shader->UseProgram();
+        uint32_t texuni = glGetUniformLocation(shader.GetProgram(), uniform.c_str());
+        shader.UseProgram();
         glUniform1i(texuni, unit);
     }
 }

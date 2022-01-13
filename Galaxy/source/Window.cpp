@@ -1,9 +1,10 @@
 ﻿#include "Window.h"
-#include "Log/Log.h"
+#include "Log.h"
 #include <stb/stb_image.h>
 
 namespace Galaxy {
     Window::Window(std::string title, int width, int const height, bool resizable, int samples)
+        : window(nullptr), width(0), height(0)
     {
         if (instance != nullptr)
         {
@@ -29,12 +30,6 @@ namespace Galaxy {
         int ch;
         icon.pixels = stbi_load("Assets/icon48x48.png", &icon.width, &icon.height, &ch, 0);
         glfwSetWindowIcon(window, 1, &icon);
-    }
-
-    Window* Window::Create(std::string title, int width, int const height, bool resizable, int samples)
-    {
-        instance = new Window(title, width, height, resizable, samples);
-        return instance;
     }
 }
 

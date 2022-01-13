@@ -8,13 +8,12 @@ namespace Galaxy
 	{
 	private:
 		unsigned int ID;
-		VertexArray();
 		uint16_t attribcount;
 		uint16_t stride;
 		uint16_t offset;
 	
 	public:
-		static std::shared_ptr<VertexArray> Create();
+		VertexArray();
 	
 		void Bind() const;
 		void Unbind() const;

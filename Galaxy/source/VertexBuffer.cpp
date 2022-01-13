@@ -2,14 +2,9 @@
 
 namespace Galaxy 
 {
-	VertexBuffer::VertexBuffer()
+	VertexBuffer::VertexBuffer() : ID(0)
 	{
 		glGenBuffers(1, &ID);
-	}
-
-	std::shared_ptr<VertexBuffer> VertexBuffer::Create()
-	{
-		return std::make_shared<VertexBuffer>(VertexBuffer());
 	}
 
 	void VertexBuffer::SetData(GLsizeiptr size, const void* data)

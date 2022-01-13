@@ -2,14 +2,9 @@
 
 namespace Galaxy 
 {
-	IndexBuffer::IndexBuffer()
+	IndexBuffer::IndexBuffer() : ID(0)
 	{
 		glGenBuffers(1, &ID);
-	}
-
-	std::shared_ptr<IndexBuffer> IndexBuffer::Create()
-	{
-		return std::make_shared<IndexBuffer>(IndexBuffer());
 	}
 
 	void IndexBuffer::SetData(GLsizeiptr size, const void* data)
