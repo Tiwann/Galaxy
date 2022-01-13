@@ -7,7 +7,7 @@
 #include "Log/Log.h"
 
 namespace Galaxy {
-	Shader::Shader(const std::string vertFile, const std::string fragFile)
+	Shader::Shader(const std::string& vertFile, const std::string& fragFile)
 	{
 		vertPath = std::format("Assets/Shaders/{}", vertFile);
 		fragPath = std::format("Assets/Shaders/{}", fragFile);
@@ -27,6 +27,9 @@ namespace Galaxy {
 		programID = glCreateProgram();
 		glAttachShader(programID, vertID);
 		glAttachShader(programID, fragID);
+
+		delete vs;
+		delete fs;
 	}
 
 	void Shader::Compile()
@@ -116,9 +119,9 @@ namespace Galaxy {
 		glUseProgram(programID);
 	}
 
-	Shader* Shader::Create(const std::string vertPath, const std::string fragPath)
+	std::shared_ptr<Shader> Shader::Create(const std::string& vertPath, const std::string& fragPath)
 	{
-		return new Shader(vertPath, fragPath);
+		return std::make_shared<Shader>(Shader(vertPath, fragPath));
 	}
 
 	void Shader::PrintSource()
@@ -127,7 +130,7 @@ namespace Galaxy {
 		std::cout << fragSource << std::endl;
 	}
 
-	std::string Shader::Read(const std::string file)
+	std::string Shader::Read(const std::string& file)
 	{
 		std::ifstream stream(file, std::ios::in);
 

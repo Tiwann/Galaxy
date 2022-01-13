@@ -22,6 +22,10 @@ namespace Galaxy {
 		static void Init();
 		inline static std::shared_ptr<spdlog::logger>& GetLogger() { return _coreLogger; }
 
+		// We don't want to instatiate this class
+		Log() = delete;
+		Log(const Log& other) = delete;
+		void operator=(const Log& other) = delete;
 	};
 }
 

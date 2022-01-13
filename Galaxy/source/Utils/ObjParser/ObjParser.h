@@ -9,7 +9,6 @@
 
 namespace Galaxy 
 {	
-
 	struct ObjData
 	{
 		std::vector<std::string> objects;
@@ -26,6 +25,11 @@ namespace Galaxy
 		static Vertices DataToVertices(const ObjData objdata);
 		static Vertices DataToVertices(const ObjData objdata, std::vector<unsigned int>& out_glindices);
 		static Vertices ParseFileToVertices(const std::string filepath) { return DataToVertices(ParseFile(filepath)); }
+
+		// We don't want to initialize this class!
+		ObjParser() = delete;
+		ObjParser(const ObjParser& other) = delete;
+		void operator=(const ObjParser& other) = delete;
 	};
 }
 

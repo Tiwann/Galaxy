@@ -21,14 +21,15 @@ namespace Galaxy {
         GLFWwindow* GetWindow() const { assert(window != nullptr); return window; }
         Window(Window& other) = delete;
         void operator=(const Window&) = delete;
+        Window() = delete;
 
         bool ShouldClose()                  const { return glfwWindowShouldClose(window); }
         void MakeContextCurrent()           const { glfwMakeContextCurrent(window); }
         void SwapBuffers()                  const { glfwSwapBuffers(window); }
         void SetTitle(std::string newTitle) const { glfwSetWindowTitle(window, newTitle.c_str()); }
         void SetVSyncEnabled(bool enabled)  const { glfwSwapInterval(enabled); }
-        int GetWidth() const { return width; }
-        int GetHeight() const { return height; }
+        int GetWidth()                      const { return width; }
+        int GetHeight()                     const { return height; }
 
 
     };

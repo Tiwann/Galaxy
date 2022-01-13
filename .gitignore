@@ -8,3 +8,7 @@ intermediate/**
 *.vcxproj
 *.vcxproj.filters
 *.vcxproj.user
+*makefile
+.idea/
+.idea/**
+*.xml

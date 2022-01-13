@@ -2,54 +2,67 @@
 #include <GL/glew.h>
 #include <stb/stb_image.h>
 #include <Log/Log.h>
+#include <fstream>
+
 
 namespace Galaxy
 {
-    Texture2D::Texture2D(const std::string file, const TextureParams params)
+    TextureParams TextureParams::Default =  { GL_RGBA, GL_NEAREST, GL_REPEAT };
+    TextureParams TextureParams::Repeat =   { GL_RGBA, GL_NEAREST, GL_REPEAT };
+    TextureParams TextureParams::Mirror =   { GL_RGBA, GL_NEAREST, GL_MIRRORED_REPEAT };
+  
+
+    Texture2D::Texture2D(const std::string file, int32_t slot, const TextureParams& params)
+        : ID(0), slot(slot), width(0), height(0), channels(0), data(nullptr), path(file), params(params)
     {       
-        this->slot = slot;
+        
         stbi_set_flip_vertically_on_load(true);
         data = stbi_load(file.c_str(), &width, &height, &channels, 0);
-
+        
+        if (!data) 
+        {
+            LOG_ERROR("Failed to create Texture2D.");
+            return;
+        }
+        
         glGenTextures(1, &ID);
-        glActiveTexture(this->slot);
-        glBindTexture(this->slot, ID);
-
+        glBindTexture(GL_TEXTURE_2D, ID);
+        
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, params.filter);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, params.filter);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, params.wrap);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, params.wrap);
 
         glTexImage2D(GL_TEXTURE_2D, 0, params.format, width, height, 0, params.format, GL_UNSIGNED_BYTE, data);
-        glGenerateMipmap(GL_TEXTURE_2D);
 
-        glBindTexture(this->slot, 0);
+        stbi_image_free(data);
         LOG_INFO("[TEXTURE2D] Successfully created Texture2D from {}!", file);
         LOG_TRACE("[TEXTURE2D]-----Width: {} | Height: {}", width, height);
+
+        glBindTexture(GL_TEXTURE_2D, 0);
     }
 
-    Texture2D* Galaxy::Texture2D::Create(const std::string file, TextureParams params)
+    std::shared_ptr<Texture2D> Texture2D::Create(const std::string file, int32_t slot, const TextureParams& params)
     {
-        return new Texture2D(file, params);
+        return std::make_shared<Texture2D>(Texture2D(file, slot, params));
     }
 
     void Texture2D::Bind() const
     {
-        glBindTexture(slot, ID);
+        glBindTexture(GL_TEXTURE_2D, ID);
     }
 
     void Texture2D::Unbind() const
     {
-        glBindTexture(slot, 0);
+        glBindTexture(GL_TEXTURE_2D, 0);
     }
 
     void Texture2D::Delete() const
     {
-        stbi_image_free(data);
         glDeleteTextures(1, &ID);
     }
 
-    void Texture2D::SetUniformData(Shader* shader, std::string uniform, uint32_t unit) const
+    void Texture2D::SetUniformData(std::shared_ptr<Shader> shader, const std::string uniform, uint32_t unit) const
     {
         uint32_t texuni = glGetUniformLocation(shader->GetProgram(), uniform.c_str());
         shader->UseProgram();

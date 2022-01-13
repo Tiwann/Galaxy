@@ -1,5 +1,6 @@
 #pragma once
 #include <glm/glm.hpp>
+#include <memory>
 
 namespace Galaxy 
 {
@@ -13,7 +14,7 @@ namespace Galaxy
 		uint16_t offset;
 	
 	public:
-		static VertexArray* Create();
+		static std::shared_ptr<VertexArray> Create();
 	
 		void Bind() const;
 		void Unbind() const;

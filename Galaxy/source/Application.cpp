@@ -23,8 +23,8 @@ int main() {
 
     Galaxy::Window* window = Galaxy::Window::Create("Galaxy Renderer", 600, 600, false, 16);
     
+  
     
-
     if (!window->GetWindow()) {
         Galaxy::LOG_ERROR("Failed to create a window.");
         return -1;
@@ -45,56 +45,26 @@ int main() {
     Galaxy::LOG_TRACE("Using GLEW version {}.{}.{}", GLEW_VERSION_MAJOR, GLEW_VERSION_MINOR, GLEW_VERSION_MICRO);
     Galaxy::LOG_TRACE("Using OpenGL: {}\n", glGetString(GL_VERSION));
 
-    //const Galaxy::Vertices vertices = {
-    //    {
-    //        .position   = glm::vec3(-0.5f, -0.5f, 0.0f),
-    //        .texCoord   = glm::vec2(0.0f, 0.0f),
-    //        .normal     = glm::vec3(0.0f, 0.0f, 0.0f),
-    //        .color      = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f),
-    //    },
-    //    {
-    //        .position   = glm::vec3(-0.5f, 0.5f, 0.0f),
-    //        .texCoord   = glm::vec2(0.0f, 1.0f),
-    //        .normal     = glm::vec3(0.0f, 0.0f, 0.0f),
-    //        .color      = glm::vec4(0.0f, 1.0f, 0.0f, 1.0f),
-    //    },
-    //    {
-    //        .position   = glm::vec3(0.5f, 0.5f, 0.0f),
-    //        .texCoord   = glm::vec2(1.0f, 1.0f),
-    //        .normal     = glm::vec3(0.0f, 0.0f, 0.0f),
-    //        .color      = glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
-    //    },
-    //    {
-    //        .position = glm::vec3(0.5f, -0.5f, 0.0f),
-    //        .texCoord = glm::vec2(1.0f, 0.0f),
-    //        .normal = glm::vec3(0.0f, 0.0f, 0.0f),
-    //        .color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f),
-    //    }
-    //};
-    //
-    //unsigned int indices[] = { 0, 2, 1, 0, 3, 2 };
 
     Galaxy::Vertices cube = Galaxy::ObjParser::ParseFileToVertices("Assets/Models/superleaf.obj");
-    Galaxy::Shader* shader = Galaxy::Shader::Create("Main/Main.vert", "Main/Main.frag");
+    auto shader = Galaxy::Shader::Create("Main/Main.vert", "Main/Main.frag");
     shader->Compile();
     shader->Link();
     shader->Delete();
 
-    Galaxy::Texture2D* texture = Galaxy::Texture2D::Create("Assets/Textures/superleaf.png", { GL_TEXTURE0, GL_RGBA, GL_NEAREST, GL_REPEAT });
+    auto texture = Galaxy::Texture2D::Create("Assets/Textures/superleaf.png", GL_TEXTURE0, Galaxy::TextureParams::Default);
     texture->SetUniformData(shader, "tex0", 0);
 
     // Create vao, vbo, ibo
-    Galaxy::VertexArray* vao    = Galaxy::VertexArray::Create();
-    Galaxy::VertexBuffer* vbo   = Galaxy::VertexBuffer::Create();
-    Galaxy::IndexBuffer* ibo    = Galaxy::IndexBuffer::Create();
+    auto vao  = Galaxy::VertexArray::Create();
+    auto vbo = Galaxy::VertexBuffer::Create();
+    auto ibo  = Galaxy::IndexBuffer::Create();
 
     vao->Bind();
 
     vbo->Bind();
     vbo->SetData(cube);
 
-    //ibo->Bind();
-    //ibo->SetData(sizeof(indices), indices);
 
     // Position Attribute
     glEnableVertexAttribArray(0);
