@@ -1,5 +1,4 @@
 #include <GL/glew.h>
-#include <glfw/glfw3.h>
 #include "Log.h"
 #include "Window.h"
 #include "Shader.h"
@@ -9,52 +8,43 @@
 #include "IndexBuffer.h"
 #include "ObjParser.h"
 #include "Texture2D.h"
+
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <chrono>
 
 #define GALAXY_VERSION_MAJOR 0
 #define GALAXY_VERSION_MINOR 1
 
 int main() {
     Galaxy::Log::Init();
-    
     Galaxy::LOG_TRACE("Welcome to Galaxy Renderer version {}.{}!", GALAXY_VERSION_MAJOR, GALAXY_VERSION_MINOR);
 
+    // Creating the window
     Galaxy::Window window = Galaxy::Window("Galaxy Renderer", 600, 600, false, 16);
-    
-  
-    
-    if (!window.GetWindow()) {
-        Galaxy::LOG_ERROR("Failed to create a window.");
-        return -1;
-    }
+    if (!window.Check()) return -1;
 
-    window.MakeContextCurrent();
-    window.SetVSyncEnabled(true);
-
-    if (glewInit() != GLEW_OK) {
-        Galaxy::LOG_ERROR("Couldn't initalize GLEW.");
-        return -1;
-    }
-
-    glEnable(GL_MULTISAMPLE);
-    glEnable(GL_DEPTH_TEST);
-
+    // Logging versions
     Galaxy::LOG_TRACE("Using GLFW version {}.{}", GLFW_VERSION_MAJOR, GLFW_VERSION_MINOR);
     Galaxy::LOG_TRACE("Using GLEW version {}.{}.{}", GLEW_VERSION_MAJOR, GLEW_VERSION_MINOR, GLEW_VERSION_MICRO);
     Galaxy::LOG_TRACE("Using OpenGL: {}\n", glGetString(GL_VERSION));
 
-    
+    // Importing a model from obj file
     Galaxy::Vertices cube = Galaxy::ObjParser::ParseFileToVertices("Assets/Models/superleaf.obj");
+
+    // Creating a shader to use 
     Galaxy::Shader shader = Galaxy::Shader("Main/Main.vert", "Main/Main.frag");
+    // Compiling the shader
     shader.Compile();
     shader.Link();
     shader.Delete();
 
+    // Creating a Texture2D 
     Galaxy::Texture2D texture = Galaxy::Texture2D("Assets/Textures/superleaf.png", GL_TEXTURE0, Galaxy::TextureParams::Default);
-    texture.SetUniformData(shader, "tex0", 0);
+    // Setting uniform data in the shader
+    texture.SetUniformData(shader, "albedo", 0);
 
-    // Create vao, vbo, ibo
+    // Creating vao, vbo, ibo for rendering 
     Galaxy::VertexArray vao; 
     Galaxy::VertexBuffer vbo;
     Galaxy::IndexBuffer ibo;
@@ -126,8 +116,7 @@ int main() {
         glfwPollEvents();
     }
     
-
-    
+    Galaxy::LOG_TRACE("Closing application...");
     glfwTerminate();
     return 0;
 }

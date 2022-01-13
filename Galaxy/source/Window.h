@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include <GL/glew.h>
 #include "GLFW/glfw3.h"
 #include <assert.h>
 #include <string>
@@ -21,6 +22,8 @@ namespace Galaxy {
         void operator=(const Window&) = delete;
         Window() = delete;
 
+
+        bool Check();
         bool ShouldClose()                  const { return glfwWindowShouldClose(window); }
         void MakeContextCurrent()           const { glfwMakeContextCurrent(window); }
         void SwapBuffers()                  const { glfwSwapBuffers(window); }

@@ -4,7 +4,7 @@
 
 namespace Galaxy {
     Window::Window(std::string title, int width, int const height, bool resizable, int samples)
-        : window(nullptr), width(0), height(0)
+        : window(nullptr), width(width), height(height)
     {
         if (instance != nullptr)
         {
@@ -23,13 +23,30 @@ namespace Galaxy {
         glfwWindowHint(GLFW_RESIZABLE, resizable);
         glfwWindowHint(GLFW_SAMPLES, samples);
         this->window = glfwCreateWindow(width, height, title.c_str(), nullptr, nullptr);
-        this->width = width;
-        this->height = height;
 
-        GLFWimage icon = GLFWimage();
+        GLFWimage icon;
         int ch;
         icon.pixels = stbi_load("Assets/icon48x48.png", &icon.width, &icon.height, &ch, 0);
         glfwSetWindowIcon(window, 1, &icon);
+    }
+
+    bool Window::Check()
+    {
+        if (!window) {
+            Galaxy::LOG_ERROR("Failed to create a window.");
+            return false;
+        }
+
+        MakeContextCurrent();
+        SetVSyncEnabled(true);
+
+        if (glewInit() != GLEW_OK) {
+            Galaxy::LOG_ERROR("Couldn't initalize GLEW.");
+            return false;
+        }
+
+        glEnable(GL_MULTISAMPLE);
+        glEnable(GL_DEPTH_TEST);
     }
 }
 

@@ -4,8 +4,8 @@ in vec4 vcolor;
 in vec2 texcoord;
 out vec4 color;
 
-uniform sampler2D tex0;
+uniform sampler2D albedo;
 
 void main() {
-    color = texture(tex0, texcoord);
+    color = texture(albedo, texcoord);
 }

@@ -37,7 +37,7 @@ namespace Galaxy
 
         stbi_image_free(data);
         LOG_INFO("[TEXTURE2D] Successfully created Texture2D from {}!", file);
-        LOG_TRACE("[TEXTURE2D]-----Width: {} | Height: {}", width, height);
+        LOG_TRACE("[TEXTURE2D]-----Width: {} | Height: {}\n", width, height);
 
         glBindTexture(GL_TEXTURE_2D, 0);
     }
