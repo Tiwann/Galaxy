@@ -12,7 +12,7 @@ namespace Galaxy
 	public:
 		VertexBuffer();
 		void SetData(GLsizeiptr size, const void* data);
-		void SetData(Vertices vertices);
+		void SetData(const std::vector<Vertex>& vertices);
 		void Bind() const;
 		void Unbind() const;
 	};

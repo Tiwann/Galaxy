@@ -9,7 +9,7 @@ namespace Galaxy
     typedef uint16_t ushort;
     typedef uint8_t  ubyte;
 
-    ObjData ObjParser::ParseFile(const std::string filepath)
+    ObjData ObjParser::ParseFile(const std::string& filepath)
     {
         std::ifstream stream(filepath, std::ios::in);
         if (!stream.is_open())
@@ -106,9 +106,9 @@ namespace Galaxy
     }
 
     
-    Vertices ObjParser::DataToVertices(const ObjData objdata, std::vector<unsigned int>& out_glindices)
+    std::vector<Vertex> ObjParser::DataToVertices(const ObjData& objdata, std::vector<unsigned int>& out_glindices)
     {
-        Vertices vertices = Vertices(objdata.indices.size());
+        std::vector<Vertex> vertices = std::vector<Vertex>(objdata.indices.size());
         out_glindices = std::vector<uint>();
 
         for (uint i = 0; i < objdata.indices.size(); i++)
@@ -126,9 +126,9 @@ namespace Galaxy
         return vertices;
     }
 
-    Vertices ObjParser::DataToVertices(const ObjData objdata)
+    std::vector<Vertex> ObjParser::DataToVertices(const ObjData& objdata)
     {
-        Vertices vertices = Vertices(objdata.indices.size());
+        std::vector<Vertex> vertices = std::vector<Vertex>(objdata.indices.size());
 
         for (uint i = 0; i < objdata.indices.size(); i++)
         {

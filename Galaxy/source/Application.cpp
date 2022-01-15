@@ -21,7 +21,7 @@ int main() {
     Galaxy::LOG_TRACE("Welcome to Galaxy Renderer version {}.{}!", GALAXY_VERSION_MAJOR, GALAXY_VERSION_MINOR);
 
     // Creating the window
-    Galaxy::Window window = Galaxy::Window("Galaxy Renderer", 600, 600, false, 16);
+    Galaxy::Window window("Galaxy Renderer", 600, 600, false, 16);
     if (!window.Check()) return -1;
 
     // Logging versions
@@ -30,17 +30,18 @@ int main() {
     Galaxy::LOG_TRACE("Using OpenGL: {}\n", glGetString(GL_VERSION));
 
     // Importing a model from obj file
-    Galaxy::Vertices cube = Galaxy::ObjParser::ParseFileToVertices("Assets/Models/superleaf.obj");
+    using VertexArray = std::vector<Galaxy::Vertex>;
+    VertexArray cube = Galaxy::ObjParser::ParseFileToVertices("Assets/Models/superleaf.obj");
 
     // Creating a shader to use 
-    Galaxy::Shader shader = Galaxy::Shader("Main/Main.vert", "Main/Main.frag");
+    Galaxy::Shader shader("Main/Main.vert", "Main/Main.frag");
     // Compiling the shader
     shader.Compile();
     shader.Link();
     shader.Delete();
 
     // Creating a Texture2D 
-    Galaxy::Texture2D texture = Galaxy::Texture2D("Assets/Textures/superleaf.png", GL_TEXTURE0, Galaxy::TextureParams::Default);
+    Galaxy::Texture2D texture("Assets/Textures/superleaf.png", GL_TEXTURE0, Galaxy::TextureParams::Default);
     // Setting uniform data in the shader
     texture.SetUniformData(shader, "albedo", 0);
 
@@ -54,6 +55,9 @@ int main() {
     vbo.SetData(cube);
 
 
+    //TODO:
+    // Attributes / Layout abstraction
+    // May create a BufferLayout class in which we can push data in, then fill those gl func programatically
     // Position Attribute
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 12 * sizeof(float), (void*)0);

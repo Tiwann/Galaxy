@@ -21,12 +21,12 @@ namespace Galaxy
 	class ObjParser
 	{
 	public:
-		static ObjData ParseFile(const std::string filepath);
-		static Vertices DataToVertices(const ObjData objdata);
-		static Vertices DataToVertices(const ObjData objdata, std::vector<unsigned int>& out_glindices);
-		static Vertices ParseFileToVertices(const std::string filepath) { return DataToVertices(ParseFile(filepath)); }
+		static ObjData ParseFile(const std::string& filepath);
+		static std::vector<Vertex> DataToVertices(const ObjData& objdata);
+		static std::vector<Vertex> DataToVertices(const ObjData& objdata, std::vector<unsigned int>& out_glindices);
+		static std::vector<Vertex> ParseFileToVertices(const std::string& filepath) { return DataToVertices(ParseFile(filepath)); }
 
-		// We don't want to initialize this class!
+		// We don't want to instantiate this class!
 		ObjParser() = delete;
 		ObjParser(const ObjParser& other) = delete;
 		void operator=(const ObjParser& other) = delete;

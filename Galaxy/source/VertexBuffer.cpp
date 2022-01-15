@@ -12,7 +12,7 @@ namespace Galaxy
 		glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);
 	}
 
-	void VertexBuffer::SetData(Vertices vertices)
+	void VertexBuffer::SetData(const std::vector<Vertex>& vertices)
 	{
 		glBufferData(GL_ARRAY_BUFFER, vertices.size() * Galaxy::Vertex::GetSize(), vertices.data(), GL_STATIC_DRAW);
 	}
