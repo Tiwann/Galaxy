@@ -1,6 +1,6 @@
 #pragma once
 #include <glm/glm.hpp>
-#include <memory>
+#include "VertexBuffer.h"
 
 namespace Galaxy 
 {
@@ -8,17 +8,15 @@ namespace Galaxy
 	{
 	private:
 		unsigned int ID;
-		uint16_t attribcount;
-		uint16_t stride;
-		uint16_t offset;
-	
+		unsigned int count;
+		unsigned int stride;
 	public:
 		VertexArray();
-	
+		~VertexArray();
 		void Bind() const;
 		void Unbind() const;
-
-		
 	};
+
+
 }
 

@@ -7,6 +7,11 @@ namespace Galaxy
 		glGenBuffers(1, &ID);
 	}
 
+	VertexBuffer::~VertexBuffer()
+	{
+		glDeleteBuffers(1, &ID);
+	}
+
 	void VertexBuffer::SetData(GLsizeiptr size, const void* data)
 	{
 		glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);
@@ -26,4 +31,5 @@ namespace Galaxy
 	{
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
+	
 }

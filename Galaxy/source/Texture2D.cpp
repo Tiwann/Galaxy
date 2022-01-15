@@ -12,7 +12,7 @@ namespace Galaxy
     TextureParams TextureParams::Mirror =   { GL_RGBA, GL_NEAREST, GL_MIRRORED_REPEAT };
   
 
-    Texture2D::Texture2D(const std::string file, int32_t slot, const TextureParams& params)
+    Texture2D::Texture2D(const std::string& file, int32_t slot, const TextureParams& params)
         : ID(0), slot(slot), width(0), height(0), channels(0), data(nullptr), path(file), params(params)
     {       
         
@@ -21,7 +21,7 @@ namespace Galaxy
         
         if (!data) 
         {
-            LOG_ERROR("Failed to create Texture2D.");
+            LOG_ERROR("[TEXTURE2D] Failed to create Texture2D.");
             return;
         }
         
@@ -42,6 +42,11 @@ namespace Galaxy
         glBindTexture(GL_TEXTURE_2D, 0);
     }
 
+    Texture2D::~Texture2D()
+    {
+        glDeleteTextures(1, &ID);
+    }
+
     void Texture2D::Bind() const
     {
         glBindTexture(GL_TEXTURE_2D, ID);
@@ -57,9 +62,9 @@ namespace Galaxy
         glDeleteTextures(1, &ID);
     }
 
-    void Texture2D::SetUniformData(Shader& shader, const std::string uniform, uint32_t unit) const
+    void Texture2D::SetUniformData(const Shader& shader, const std::string uniform, unsigned int unit) const
     {
-        uint32_t texuni = glGetUniformLocation(shader.GetProgram(), uniform.c_str());
+        unsigned int texuni = glGetUniformLocation(shader.GetProgram(), uniform.c_str());
         shader.UseProgram();
         glUniform1i(texuni, unit);
     }

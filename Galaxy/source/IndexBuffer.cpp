@@ -7,6 +7,11 @@ namespace Galaxy
 		glGenBuffers(1, &ID);
 	}
 
+	IndexBuffer::~IndexBuffer()
+	{
+		glDeleteBuffers(1, &ID);
+	}
+
 	void IndexBuffer::SetData(GLsizeiptr size, const void* data)
 	{
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);

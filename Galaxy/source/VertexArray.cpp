@@ -3,12 +3,14 @@
 
 namespace Galaxy 
 {
-	VertexArray::VertexArray()
-		: ID(0), attribcount(0), stride(0), offset(0)
+	VertexArray::VertexArray() : ID(0), count(0), stride(0)
 	{
 		glGenVertexArrays(1, &ID);
-		attribcount = 0;
-		stride = 0;
+	}
+
+	VertexArray::~VertexArray()
+	{
+		glDeleteBuffers(1, &ID);
 	}
 
 	void VertexArray::Bind() const

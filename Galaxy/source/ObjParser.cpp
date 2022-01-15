@@ -5,10 +5,6 @@
 
 namespace Galaxy 
 {
-    typedef uint32_t uint;
-    typedef uint16_t ushort;
-    typedef uint8_t  ubyte;
-
     ObjData ObjParser::ParseFile(const std::string& filepath)
     {
         std::ifstream stream(filepath, std::ios::in);
@@ -20,12 +16,12 @@ namespace Galaxy
         std::string line;
         std::string content;
 
-        uint hcount  = 0;
-        uint ocount  = 0;
-        uint vcount  = 0;
-        uint vtcount = 0;
-        uint vncount = 0;
-        uint fcount  = 0;
+        unsigned int hcount  = 0;
+        unsigned int ocount  = 0;
+        unsigned int vcount  = 0;
+        unsigned int vtcount = 0;
+        unsigned int vncount = 0;
+        unsigned int fcount  = 0;
 
         std::vector<glm::ivec3> tmp_ind = std::vector<glm::ivec3>(3);
         glm::fvec3 tempvec = glm::fvec3(0, 0, 0);
@@ -109,9 +105,9 @@ namespace Galaxy
     std::vector<Vertex> ObjParser::DataToVertices(const ObjData& objdata, std::vector<unsigned int>& out_glindices)
     {
         std::vector<Vertex> vertices = std::vector<Vertex>(objdata.indices.size());
-        out_glindices = std::vector<uint>();
+        out_glindices = std::vector<unsigned int>();
 
-        for (uint i = 0; i < objdata.indices.size(); i++)
+        for (unsigned int i = 0; i < objdata.indices.size(); i++)
         {
             vertices[i] = {
             .position = objdata.positions[objdata.indices[i].x - 1],
@@ -130,7 +126,7 @@ namespace Galaxy
     {
         std::vector<Vertex> vertices = std::vector<Vertex>(objdata.indices.size());
 
-        for (uint i = 0; i < objdata.indices.size(); i++)
+        for (unsigned int i = 0; i < objdata.indices.size(); i++)
         {
             vertices[i] = {
             .position = objdata.positions[objdata.indices[i].x - 1],

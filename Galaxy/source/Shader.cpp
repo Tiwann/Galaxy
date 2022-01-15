@@ -31,6 +31,11 @@ namespace Galaxy {
 		glAttachShader(programID, fragID);
 	}
 
+	Shader::~Shader()
+	{
+		Delete();
+	}
+
 	void Shader::Compile()
 	{
 		if (vertSource == "" || fragSource == "")

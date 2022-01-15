@@ -9,9 +9,9 @@ namespace Galaxy {
 	
 	struct TextureParams
 	{
-		uint32_t format;	// GL_RGBA
-		uint32_t filter;	// GL_NEAREST | GL_LINEAR
-		uint32_t wrap;		// GL_REPEAT
+		unsigned int format;	// GL_RGBA
+		unsigned int filter;	// GL_NEAREST | GL_LINEAR
+		unsigned int wrap;		// GL_REPEAT
 
 		static TextureParams Default;
 		static TextureParams Repeat;
@@ -22,22 +22,23 @@ namespace Galaxy {
 	class Texture2D
 	{
 	private:
-		uint32_t ID;
-		uint32_t slot;
+		unsigned int ID;
+		unsigned int slot;
 		std::string path;
 		TextureParams params;
 		int width, height, channels;
 		unsigned char* data;
 
 	public:
-		Texture2D(const std::string file, int32_t slot, const TextureParams& params);
+		Texture2D(const std::string& file, int slot, const TextureParams& params);
+		~Texture2D();
 		void Bind() const;
 		void Unbind() const;
 		void Delete() const;
-		void SetUniformData(Shader& shader, const std::string uniform, uint32_t unit) const;
+		void SetUniformData(const Shader& shader, const std::string uniform, unsigned int unit) const;
 
-		const int32_t GetWidth() const { return width; }
-		const int32_t GetHeight() const { return height; }
+		const int GetWidth() const { return width; }
+		const int GetHeight() const { return height; }
 
 	};
 }

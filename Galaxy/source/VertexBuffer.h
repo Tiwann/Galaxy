@@ -8,9 +8,10 @@ namespace Galaxy
 	class VertexBuffer
 	{
 	private:
-		uint32_t ID;
+		unsigned int ID;
 	public:
 		VertexBuffer();
+		~VertexBuffer();
 		void SetData(GLsizeiptr size, const void* data);
 		void SetData(const std::vector<Vertex>& vertices);
 		void Bind() const;

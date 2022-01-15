@@ -12,15 +12,16 @@ namespace Galaxy {
 		std::string vertPath;
 		std::string fragPath;
 
-		uint32_t vertID;
-		uint32_t fragID;
-		uint32_t programID;
+		unsigned int vertID;
+		unsigned int fragID;
+		unsigned int programID;
 
 		bool isCompiled;
 		bool isLinked;
 	public:
 		Shader(const std::string& vertPath, const std::string& fragPath);
-		uint32_t GetProgram() const { return programID; }
+		~Shader();
+		unsigned int GetProgram() const { return programID; }
 		void PrintSource();
 		void Compile();
 		void Link();
