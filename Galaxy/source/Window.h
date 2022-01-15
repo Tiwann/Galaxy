@@ -27,6 +27,7 @@ namespace Galaxy {
         bool ShouldClose()                  const { return glfwWindowShouldClose(window); }
         void MakeContextCurrent()           const { glfwMakeContextCurrent(window); }
         void SwapBuffers()                  const { glfwSwapBuffers(window); }
+        void PollEvents()                   const { glfwPollEvents(); }
         void SetTitle(std::string newTitle) const { glfwSetWindowTitle(window, newTitle.c_str()); }
         void SetVSyncEnabled(bool enabled)  const { glfwSwapInterval(enabled); }
         int GetWidth()                      const { return width; }

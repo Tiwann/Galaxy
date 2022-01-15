@@ -23,7 +23,7 @@ int main() {
     // Creating the window
     Galaxy::Window window("Galaxy Renderer", 600, 600, false, 16);
     if (!window.Check()) return -1;
-
+    
     // Logging versions
     Galaxy::LOG_TRACE("Using GLFW version {}.{}", GLFW_VERSION_MAJOR, GLFW_VERSION_MINOR);
     Galaxy::LOG_TRACE("Using GLEW version {}.{}.{}", GLEW_VERSION_MAJOR, GLEW_VERSION_MINOR, GLEW_VERSION_MICRO);
@@ -44,7 +44,7 @@ int main() {
     Galaxy::Texture2D texture("Assets/Textures/superleaf.png", GL_TEXTURE0, Galaxy::TextureParams::Default);
     // Setting uniform data in the shader
     texture.SetUniformData(shader, "albedo", 0);
-
+     
     // Creating vao, vbo, ibo for rendering 
     Galaxy::VertexArray vao; 
     Galaxy::VertexBuffer vbo;
@@ -100,7 +100,7 @@ int main() {
         glm::mat4 view = glm::mat4(1.0f);
         glm::mat4 projection = glm::mat4(1.0f);
 
-        model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 1.0, 0.0f));
+        model = glm::rotate(model, glm::radians(rotation), glm::statics::vector3::up);
         view = glm::translate(view, glm::vec3(0.0f, 0.0, -5.0f));
         projection = glm::perspective(glm::radians(45.0f), (float)(window.GetWidth() / window.GetHeight()), 0.1f, 100.0f);
 
@@ -117,7 +117,7 @@ int main() {
         glDrawArrays(GL_TRIANGLES, 0, (int)cube.size());
         // Swap back and front buffers
         window.SwapBuffers();
-        glfwPollEvents();
+        window.PollEvents();
     }
     
     Galaxy::LOG_TRACE("Closing application...");
