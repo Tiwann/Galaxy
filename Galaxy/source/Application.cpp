@@ -113,13 +113,9 @@ int main() {
         shader.SetUniformDataMat4f("view", view);
         shader.SetUniformDataMat4f("projection", projection);
 
-
-        
         shader.SetUniformData1i("albedo", mario.GetTextures()[0]->GetSlot());
         mario.Draw();
-
-        
-
+  
         model = glm::mat4(1.0f);
         model = glm::translate(model, pos2);
         model = glm::rotate(model, glm::radians(rotation), Galaxy::Vector3::Up);
@@ -128,7 +124,6 @@ int main() {
         shader.SetUniformDataMat4f("model", model);
         shader.SetUniformData1i("albedo", leaf.GetTextures()[0]->GetSlot());
         leaf.Draw();
-
 
         ImGui::Begin("Galaxy Panel");
         ImGui::DragFloat3("Mario Position", (float*)&pos, 0.001f);
