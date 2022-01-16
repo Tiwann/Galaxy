@@ -11,7 +11,7 @@ namespace Galaxy
 {	
 	struct ObjData
 	{
-		std::vector<std::string> objects;
+		std::vector<std::string> objectnames;
 		std::vector<glm::fvec3> positions;
 		std::vector<glm::fvec2> texCoords;
 		std::vector<glm::fvec3> normals;

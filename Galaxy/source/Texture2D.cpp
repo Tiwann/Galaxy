@@ -26,7 +26,9 @@ namespace Galaxy
         }
         
         glGenTextures(1, &ID);
-        glBindTexture(GL_TEXTURE_2D, ID);
+        
+        
+        Bind();
         
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, params.filter);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, params.filter);
@@ -39,7 +41,7 @@ namespace Galaxy
         LOG_INFO("[TEXTURE2D] Successfully created Texture2D from {}!", file);
         LOG_TRACE("[TEXTURE2D]-----Width: {} | Height: {}\n", width, height);
 
-        glBindTexture(GL_TEXTURE_2D, 0);
+        Unbind();
     }
 
     Texture2D::~Texture2D()
@@ -49,23 +51,18 @@ namespace Galaxy
 
     void Texture2D::Bind() const
     {
+        glActiveTexture(GL_TEXTURE0 + slot);
         glBindTexture(GL_TEXTURE_2D, ID);
     }
 
     void Texture2D::Unbind() const
     {
+        glActiveTexture(GL_TEXTURE0 + slot);
         glBindTexture(GL_TEXTURE_2D, 0);
     }
 
     void Texture2D::Delete() const
     {
         glDeleteTextures(1, &ID);
-    }
-
-    void Texture2D::SetUniformData(const Shader& shader, const std::string uniform, unsigned int unit) const
-    {
-        unsigned int texuni = glGetUniformLocation(shader.GetProgram(), uniform.c_str());
-        shader.UseProgram();
-        glUniform1i(texuni, unit);
     }
 }

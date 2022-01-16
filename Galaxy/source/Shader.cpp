@@ -150,4 +150,55 @@ namespace Galaxy {
 		glDeleteShader(vertID);
 		glDeleteShader(fragID);
 	}
+
+	void Shader::SetUniformData1f(const std::string& name, const float& data) const
+	{
+		int location = glGetUniformLocation(programID, name.c_str());
+		glUniform1fv(location, 1, &data);
+	}
+
+	void Shader::SetUniformData2f(const std::string& name, const std::vector<float>& data) const
+	{
+		int location = glGetUniformLocation(programID, name.c_str());
+		glUniform1fv(location, 2, data.data());
+	}
+
+	void Shader::SetUniformData3f(const std::string& name, const std::vector<float>& data) const
+	{
+		int location = glGetUniformLocation(programID, name.c_str());
+		glUniform1fv(location, 3, data.data());
+	}
+
+	void Shader::SetUniformData4f(const std::string& name, const std::vector<float>& data) const
+	{
+		int location = glGetUniformLocation(programID, name.c_str());
+		glUniform1fv(location, 4, data.data());
+	}
+
+	void Shader::SetUniformData1i(const std::string& name, const int& data) const
+	{
+		int location = glGetUniformLocation(programID, name.c_str());
+		glUniform1iv(location, 1, &data);
+	}
+	void Shader::SetUniformData2i(const std::string& name, const std::vector<int>& data) const
+	{
+		int location = glGetUniformLocation(programID, name.c_str());
+		glUniform1iv(location, 2, data.data());
+	}
+	void Shader::SetUniformData3i(const std::string& name, const std::vector<int>& data) const
+	{
+		int location = glGetUniformLocation(programID, name.c_str());
+		glUniform1iv(location, 3, data.data());
+	}
+	void Shader::SetUniformData4i(const std::string& name, const std::vector<int>& data) const
+	{
+		int location = glGetUniformLocation(programID, name.c_str());
+		glUniform1iv(location, 4, data.data());
+	}
+
+	void Shader::SetUniformDataMat4f(const std::string& name, const glm::mat4& data) const
+	{
+		int location = glGetUniformLocation(programID, name.c_str());
+		glUniformMatrix4fv(location, 1, false, (float*)&data);
+	}
 }

@@ -3,7 +3,7 @@
 #include <stb/stb_image.h>
 
 namespace Galaxy {
-    Window::Window(std::string title, int width, int const height, bool resizable, int samples)
+    Window::Window(std::string title, const int width, const int height, bool resizable, int samples)
         : window(nullptr), width(width), height(height)
     {
         if (instance != nullptr)
@@ -12,13 +12,13 @@ namespace Galaxy {
         }
 
         if (!glfwInit()) {
-            Galaxy::LOG_ERROR("Couldn't initalize GLFW.");
+            LOG_ERROR("Couldn't initalize GLFW.");
             __debugbreak();
         }
 
         assert(instance == nullptr);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
         glfwWindowHint(GLFW_RESIZABLE, resizable);
         glfwWindowHint(GLFW_SAMPLES, samples);
@@ -33,7 +33,7 @@ namespace Galaxy {
     bool Window::Check()
     {
         if (!window) {
-            Galaxy::LOG_ERROR("Failed to create a window.");
+            LOG_ERROR("Failed to create a window.");
             return false;
         }
 
@@ -41,12 +41,14 @@ namespace Galaxy {
         SetVSyncEnabled(true);
 
         if (glewInit() != GLEW_OK) {
-            Galaxy::LOG_ERROR("Couldn't initalize GLEW.");
+            LOG_ERROR("Couldn't initalize GLEW.");
             return false;
         }
 
         glEnable(GL_MULTISAMPLE);
         glEnable(GL_DEPTH_TEST);
+        
+        return true;
     }
 }
 

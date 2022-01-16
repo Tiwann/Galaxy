@@ -10,7 +10,7 @@ namespace Galaxy
         std::ifstream stream(filepath, std::ios::in);
         if (!stream.is_open())
         {
-            LOG_ERROR("[OBJPARSER] Unable to open file: File doesn't exist!");
+            LOG_ERROR("[OBJPARSER] Unable to open file: File doesn't exist!\n");
             return {};
         }
         std::string line;
@@ -42,7 +42,7 @@ namespace Galaxy
             {
                 ocount++;
                 line = line.substr(2, line.size());
-                data.objects.push_back(line);          
+                data.objectnames.push_back(line);          
             }
 
             if (line[0] == 'v' && line[1] == ' ')
@@ -97,7 +97,7 @@ namespace Galaxy
         LOG_TRACE("[OBJPARSER]--TexCoords:  {}", vtcount);
         LOG_TRACE("[OBJPARSER]----Normals:  {}", vncount);
         LOG_TRACE("[OBJPARSER]------Faces:  {}", fcount);
-        LOG_TRACE("[OBJPARSER] Finished parsing .obj file!");
+        LOG_TRACE("[OBJPARSER] Finished parsing .obj file!\n");
         return data;
     }
 

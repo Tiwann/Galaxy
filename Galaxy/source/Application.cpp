@@ -1,3 +1,7 @@
+// ReSharper disable All
+#include <imgui.h>
+#include <imgui_impl_glfw.h>
+#include <imgui_impl_opengl3.h>
 #include <GL/glew.h>
 #include "Log.h"
 #include "Window.h"
@@ -12,29 +16,37 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include "Mesh.h"
+
 #define GALAXY_VERSION_MAJOR 0
-#define GALAXY_VERSION_MINOR 1
+#define GALAXY_VERSION_MINOR 2
 
 int main() {
     Galaxy::Log::Init();
     Galaxy::LOG_TRACE("Welcome to Galaxy Renderer version {}.{}!", GALAXY_VERSION_MAJOR, GALAXY_VERSION_MINOR);
 
     // Creating the window
-    Galaxy::Window window("Galaxy Renderer", 600, 600, false, 16);
+    Galaxy::Window window("Galaxy Renderer", 1280, 720, false, 16);
     if (!window.Check()) return -1;
     
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    auto io = ImGui::GetIO(); (void)io;
+    ImGui::StyleColorsDark();
+    ImGui_ImplGlfw_InitForOpenGL(window.GetWindow(), true);
+    ImGui_ImplOpenGL3_Init("#version 460");
+
     // Logging versions
     Galaxy::LOG_TRACE("Using GLFW version {}.{}", GLFW_VERSION_MAJOR, GLFW_VERSION_MINOR);
     Galaxy::LOG_TRACE("Using GLEW version {}.{}.{}", GLEW_VERSION_MAJOR, GLEW_VERSION_MINOR, GLEW_VERSION_MICRO);
-    Galaxy::LOG_TRACE("Using OpenGL: {}\n", glGetString(GL_VERSION));
+    Galaxy::LOG_TRACE("Using ImGUI version {}", IMGUI_VERSION);
+    Galaxy::LOG_TRACE("Using OpenGL: {}", glGetString(GL_VERSION));
+    Galaxy::LOG_TRACE("Renderer: {}\n", glGetString(GL_RENDERER));
 
-    // Importing a model from obj file
-    // /!\ This is an alias name for std::vector<Galaxy::Vertex>. Not a VertexArrayObject (VAO)
-    using VertexArray = std::vector<Galaxy::Vertex>;
-    VertexArray cube = Galaxy::ObjParser::ParseFileToVertices("Assets/Models/superleaf.obj");
-    Galaxy::ObjData data = Galaxy::ObjParser::ParseFile("Assets/Models/superleaf.obj");
     
-    
+
+
+
     // Creating a shader to use 
     Galaxy::Shader shader("Main/Main.vert", "Main/Main.frag");
     // Compiling the shader
@@ -42,26 +54,17 @@ int main() {
     shader.Link();
     shader.Delete();
 
-    // Creating a Texture2D 
-    Galaxy::Texture2D texture("Assets/Textures/superleaf.png", GL_TEXTURE0, Galaxy::TextureParams::Default);
-    // Setting uniform data in the shader
-    texture.SetUniformData(shader, "albedo", 0);
-     
-    // Creating vao, vbo, ibo for rendering 
-    Galaxy::VertexArray vao; 
-    Galaxy::VertexBuffer vbo;
-    Galaxy::IndexBuffer ibo;
+    
+    Galaxy::Mesh mario = Galaxy::Mesh::FromObj("Assets/Characters/Mario/Mario.obj", shader);
+    Galaxy::Mesh leaf = Galaxy::Mesh::FromObj("Assets/Models/superleaf.obj", shader);
 
-    vao.Bind();     
-    vbo.Bind();
-    vbo.SetData(cube);
-
-
-    vao.AddLayout<float>(3);
-    vao.AddLayout<float>(2);
-    vao.AddLayout<float>(3);
-    vao.AddLayout<float>(4);
-    vao.RegisterLayouts();
+    
+    mario.AddTexture(new Galaxy::Texture2D("Assets/Characters/Mario/images/mario_tex.png", 0));
+    leaf.AddTexture(new Galaxy::Texture2D("Assets/Textures/superleaf.png", 0));
+    
+    glm::mat4 model = glm::mat4(1.0f);
+    glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0, -2.0f));
+    glm::mat4 projection = glm::perspective(glm::radians(90.0f), window.GetAspectRatio(), 0.1f, 100.0f);
 
     float rotation = 0.0f;
     double oldTime = glfwGetTime();
@@ -70,6 +73,10 @@ int main() {
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
         
         double currentTime = glfwGetTime();
         if (currentTime - oldTime >= (1 / 60))
@@ -77,35 +84,49 @@ int main() {
             rotation += 0.5f;
             oldTime = currentTime;
         }
+        
+        // Make the model rotate
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(-1.0f, 0.0f, 0.0f));
+        model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 1.0f, 0.0f));
+        
+
+        shader.UseProgram();
+        // Transfer our matrices to the shader
+        shader.SetUniformDataMat4f("model", model);
+        shader.SetUniformDataMat4f("view", view);
+        shader.SetUniformDataMat4f("projection", projection);
 
 
-        shader.UseProgram();      
-        texture.Bind();
+        // Draw call
+        shader.SetUniformData1i("albedo", mario.GetTextures()[0]->GetSlot());
+        mario.Draw();
 
-        glm::mat4 model = glm::mat4(1.0f);
-        glm::mat4 view = glm::mat4(1.0f);
-        glm::mat4 projection = glm::mat4(1.0f);
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(1.0f, 0.0f, 0.0f));
+        model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 1.0f, 0.0f));
+        model = glm::scale(model, glm::vec3(.75f));
+        shader.SetUniformDataMat4f("model", model);
+        shader.SetUniformData1i("albedo", leaf.GetTextures()[0]->GetSlot());
+        leaf.Draw();
 
-        model = glm::rotate(model, glm::radians(rotation), glm::vector3::up);
-        view = glm::translate(view, glm::vec3(0.0f, 0.0, -5.0f));
-        projection = glm::perspective(glm::radians(45.0f), (float)(window.GetWidth() / window.GetHeight()), 0.1f, 100.0f);
 
-        int modelLoc = glGetUniformLocation(shader.GetProgram(), "model");
-        glUniformMatrix4fv(modelLoc, 1, false, glm::value_ptr(model));
+        ImGui::Begin("Hello ImGui !");
+        ImGui::Text("Simple as pie");
+        ImGui::End();
 
-        int viewlLoc = glGetUniformLocation(shader.GetProgram(), "view");
-        glUniformMatrix4fv(viewlLoc, 1, false, glm::value_ptr(view));
+        ImGui::Render();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
-        int projectionLoc = glGetUniformLocation(shader.GetProgram(), "projection");
-        glUniformMatrix4fv(projectionLoc, 1, false, glm::value_ptr(projection));
-
-        //glDrawElements(GL_TRIANGLES, data.indices.size() / sizeof(unsigned int), GL_UNSIGNED_INT, nullptr);
-        glDrawArrays(GL_TRIANGLES, 0, (int)cube.size());
         // Swap back and front buffers
         window.SwapBuffers();
         window.PollEvents();
     }
     
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
+
     Galaxy::LOG_TRACE("Closing application...");
     glfwTerminate();
     return 0;

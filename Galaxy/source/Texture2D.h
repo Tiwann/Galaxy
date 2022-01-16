@@ -30,13 +30,13 @@ namespace Galaxy {
 		unsigned char* data;
 
 	public:
-		Texture2D(const std::string& file, int slot, const TextureParams& params);
+		Texture2D(const std::string& file, int slot, const TextureParams& params = TextureParams::Default);
 		~Texture2D();
 		void Bind() const;
 		void Unbind() const;
 		void Delete() const;
-		void SetUniformData(const Shader& shader, const std::string uniform, unsigned int unit) const;
 
+		const unsigned int GetSlot() { return slot; }
 		const int GetWidth() const { return width; }
 		const int GetHeight() const { return height; }
 

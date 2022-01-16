@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
-#include <memory>
+#include <vector>
+#include <glm/glm.hpp>
 
 namespace Galaxy {
 	class Shader
@@ -27,8 +28,21 @@ namespace Galaxy {
 		void Link();
 		void UseProgram() const;
 		void Delete();
+
+		void SetUniformData1f(const std::string& name, const float& data) const;
+		void SetUniformData2f(const std::string& name, const std::vector<float>& data) const;
+		void SetUniformData3f(const std::string& name, const std::vector<float>& data) const;
+		void SetUniformData4f(const std::string& name, const std::vector<float>& data) const;
+					   
+		void SetUniformData1i(const std::string& name, const int& data) const;
+		void SetUniformData2i(const std::string& name, const std::vector<int>& data) const;
+		void SetUniformData3i(const std::string& name, const std::vector<int>& data) const;
+		void SetUniformData4i(const std::string& name, const std::vector<int>& data) const;
+		void SetUniformDataMat4f(const std::string& name, const glm::mat4& data) const;
+
 	private:
 		std::string Read(const std::string& file);
 	};
+
 }
 
