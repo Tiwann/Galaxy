@@ -13,7 +13,8 @@ project "Galaxy"
         "external/**.c",
         "external/**.cpp",
         "external/**.h",
-        "external/**.hpp"
+        "external/**.hpp",
+        "Assets/**"
     }
 
     includedirs {
@@ -21,6 +22,7 @@ project "Galaxy"
         "external/glm",
         "external/spdlog/include",
         "external/stb",
+        "external/imgui/include",
         "../Vendor/GLFW/include",
         "../Vendor/GLEW/include",
     }
