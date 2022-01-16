@@ -6,13 +6,14 @@
 #include "Log.h"
 #include "Window.h"
 #include "Shader.h"
+
 #include "Vertex.h"
 #include "VertexArray.h"
 #include "VertexBuffer.h"
 #include "IndexBuffer.h"
 #include "ObjParser.h"
 #include "Texture2D.h"
-
+#include "Vector3.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
@@ -32,7 +33,7 @@ int main() {
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     auto io = ImGui::GetIO(); (void)io;
-    ImGui::StyleColorsDark();
+    ImGui::StyleColorsLight();
     ImGui_ImplGlfw_InitForOpenGL(window.GetWindow(), true);
     ImGui_ImplOpenGL3_Init("#version 460");
 
@@ -62,9 +63,15 @@ int main() {
     mario.AddTexture(new Galaxy::Texture2D("Assets/Characters/Mario/images/mario_tex.png", 0));
     leaf.AddTexture(new Galaxy::Texture2D("Assets/Textures/superleaf.png", 0));
     
+    float orthoScale = 3.0f;
+
+    Galaxy::Vector3 cameraPos = Galaxy::Vector3(0.0f, 0.0f, -1.0f);
     glm::mat4 model = glm::mat4(1.0f);
-    glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0, -2.0f));
-    glm::mat4 projection = glm::perspective(glm::radians(90.0f), window.GetAspectRatio(), 0.1f, 100.0f);
+    glm::mat4 view = glm::translate(glm::mat4(1.0f), cameraPos);
+    glm::mat4 projection = glm::ortho(-16.0f * orthoScale, 16.0f * orthoScale, -9.0f * orthoScale,9.0f * orthoScale, 0.00001f, 10000000.0f);
+
+    Galaxy::Vector3 pos = Galaxy::Vector3(-1.0f, 0.0f, 0.0f);
+    Galaxy::Vector3 pos2 = Galaxy::Vector3(1.0f, 0.0f, 0.0f);
 
     float rotation = 0.0f;
     double oldTime = glfwGetTime();
@@ -85,11 +92,20 @@ int main() {
             oldTime = currentTime;
         }
         
+        projection = glm::ortho(
+            -16.0f / orthoScale,
+            16.0f / orthoScale,
+            -9.0f / orthoScale,
+            9.0f / orthoScale,
+            0.00001f,
+            10000.0f);
+
+        view = glm::translate(glm::mat4(1.0f), cameraPos);
         // Make the model rotate
         model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(-1.0f, 0.0f, 0.0f));
+        model = glm::translate(model, pos);
         model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 1.0f, 0.0f));
-        
+        model = glm::scale(model, glm::vec3(1.0f));
 
         shader.UseProgram();
         // Transfer our matrices to the shader
@@ -98,21 +114,27 @@ int main() {
         shader.SetUniformDataMat4f("projection", projection);
 
 
-        // Draw call
+        
         shader.SetUniformData1i("albedo", mario.GetTextures()[0]->GetSlot());
         mario.Draw();
 
+        
+
         model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(1.0f, 0.0f, 0.0f));
-        model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 1.0f, 0.0f));
-        model = glm::scale(model, glm::vec3(.75f));
+        model = glm::translate(model, pos2);
+        model = glm::rotate(model, glm::radians(rotation), Galaxy::Vector3::Up);
+        model = glm::scale(model, glm::vec3(1.0f));
+
         shader.SetUniformDataMat4f("model", model);
         shader.SetUniformData1i("albedo", leaf.GetTextures()[0]->GetSlot());
         leaf.Draw();
 
 
-        ImGui::Begin("Hello ImGui !");
-        ImGui::Text("Simple as pie");
+        ImGui::Begin("Galaxy Panel");
+        ImGui::DragFloat3("Mario Position", (float*)&pos, 0.001f);
+        ImGui::DragFloat3("Leaf Position", (float*)&pos2, 0.001f);
+        ImGui::DragFloat3("Camera Position", (float*)&cameraPos, 0.001f);
+        ImGui::DragFloat("Ortho", &orthoScale, 0.001f);
         ImGui::End();
 
         ImGui::Render();
