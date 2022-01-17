@@ -3,19 +3,20 @@
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 #include <GL/glew.h>
+
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
 #include "Log.h"
 #include "Window.h"
 #include "Shader.h"
-
 #include "Vertex.h"
 #include "VertexArray.h"
 #include "VertexBuffer.h"
 #include "IndexBuffer.h"
 #include "ObjParser.h"
 #include "Texture2D.h"
-#include "Vector3.h"
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
+#include "Camera.h"
 
 #include "Mesh.h"
 
@@ -43,11 +44,7 @@ int main() {
     Galaxy::LOG_TRACE("Using ImGUI version {}", IMGUI_VERSION);
     Galaxy::LOG_TRACE("Using OpenGL: {}", glGetString(GL_VERSION));
     Galaxy::LOG_TRACE("Renderer: {}\n", glGetString(GL_RENDERER));
-
     
-
-
-
     // Creating a shader to use 
     Galaxy::Shader shader("Main/Main.vert", "Main/Main.frag");
     // Compiling the shader
@@ -55,23 +52,17 @@ int main() {
     shader.Link();
     shader.Delete();
 
-    
     Galaxy::Mesh mario = Galaxy::Mesh::FromObj("Assets/Characters/Mario/Mario.obj", shader);
-    Galaxy::Mesh leaf = Galaxy::Mesh::FromObj("Assets/Models/superleaf.obj", shader);
+    mario.AddTexture(new Galaxy::Texture2D("Assets/Characters/Mario/mario_tex.png", 0));
 
-    
-    mario.AddTexture(new Galaxy::Texture2D("Assets/Characters/Mario/images/mario_tex.png", 0));
-    leaf.AddTexture(new Galaxy::Texture2D("Assets/Textures/superleaf.png", 0));
-    
-    float orthoScale = 3.0f;
 
-    Galaxy::Vector3 cameraPos = Galaxy::Vector3(0.0f, 0.0f, -1.0f);
+    bool ortho = true;
+    Galaxy::Camera camera;
+    camera.transform.position = glm::vec3(0.0f, 0.0f, -2.0f);
+    //camera.SetOrtho(120.0f, 0.0001f, 1000.0f, window.GetWidth(), window.GetHeight());
+    camera.SetPerspective(90.0f, 0.001f, 100.0f, window.GetWidth(), window.GetHeight());
     glm::mat4 model = glm::mat4(1.0f);
-    glm::mat4 view = glm::translate(glm::mat4(1.0f), cameraPos);
-    glm::mat4 projection = glm::ortho(-16.0f * orthoScale, 16.0f * orthoScale, -9.0f * orthoScale,9.0f * orthoScale, 0.00001f, 10000000.0f);
-
-    Galaxy::Vector3 pos = Galaxy::Vector3(-1.0f, 0.0f, 0.0f);
-    Galaxy::Vector3 pos2 = Galaxy::Vector3(1.0f, 0.0f, 0.0f);
+    glm::vec3 pos = glm::vec3(0.0f, 0.0f, 0.0f);
 
     float rotation = 0.0f;
     double oldTime = glfwGetTime();
@@ -79,7 +70,6 @@ int main() {
     {
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
 
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
@@ -92,15 +82,8 @@ int main() {
             oldTime = currentTime;
         }
         
-        projection = glm::ortho(
-            -16.0f / orthoScale,
-            16.0f / orthoScale,
-            -9.0f / orthoScale,
-            9.0f / orthoScale,
-            0.00001f,
-            10000.0f);
+        camera.Update(camera.GetMode());
 
-        view = glm::translate(glm::mat4(1.0f), cameraPos);
         // Make the model rotate
         model = glm::mat4(1.0f);
         model = glm::translate(model, pos);
@@ -110,26 +93,17 @@ int main() {
         shader.UseProgram();
         // Transfer our matrices to the shader
         shader.SetUniformDataMat4f("model", model);
-        shader.SetUniformDataMat4f("view", view);
-        shader.SetUniformDataMat4f("projection", projection);
+        shader.SetUniformDataMat4f("view", camera.GetViewMatrix());
+        shader.SetUniformDataMat4f("projection", camera.GetProjectionMatrix());
 
         shader.SetUniformData1i("albedo", mario.GetTextures()[0]->GetSlot());
         mario.Draw();
   
-        model = glm::mat4(1.0f);
-        model = glm::translate(model, pos2);
-        model = glm::rotate(model, glm::radians(rotation), Galaxy::Vector3::Up);
-        model = glm::scale(model, glm::vec3(1.0f));
-
-        shader.SetUniformDataMat4f("model", model);
-        shader.SetUniformData1i("albedo", leaf.GetTextures()[0]->GetSlot());
-        leaf.Draw();
 
         ImGui::Begin("Galaxy Panel");
-        ImGui::DragFloat3("Mario Position", (float*)&pos, 0.001f);
-        ImGui::DragFloat3("Leaf Position", (float*)&pos2, 0.001f);
-        ImGui::DragFloat3("Camera Position", (float*)&cameraPos, 0.001f);
-        ImGui::DragFloat("Ortho", &orthoScale, 0.001f);
+        ImGui::DragFloat3("Mario Position", (float*)&pos, 0.01f);
+        ImGui::DragFloat3("Camera Position", (float*)&camera.transform.position, 0.01f);
+        ImGui::DragFloat("Field Of View", &camera.fov, 0.1f);
         ImGui::End();
 
         ImGui::Render();
