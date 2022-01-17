@@ -8,7 +8,7 @@ namespace Galaxy
 {
 
     Mesh::Mesh(const std::vector<Vertex>& vertices, const Shader& shader, const std::string& name = "Mesh")
-        : vao(VertexArray()), vbo(VertexBuffer()),  vertices(vertices), shader(shader), name(name)
+        : vao(VertexArray()), vbo(VertexBuffer()),  vertices(vertices), shader(shader), name(name), SceneObject()
     {
         vao.Bind();
         vbo.Bind();

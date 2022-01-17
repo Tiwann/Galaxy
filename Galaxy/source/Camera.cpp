@@ -3,14 +3,14 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/euler_angles.hpp>
 
-
+#include "Transform.h"
 
 namespace Galaxy
 {
 	Camera::Camera() 
 		: mode(CameraMode::ORTHO), znear(0.0f), zfar(0.0f), width(0.0f), height(0.0f), scale(0.0f), fov(0.0f),
 		view(glm::mat4(1.0)), projection(glm::mat4(1.0f)),
-		transform({glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.0f)})
+		transform(Transform())
 	{
 
 	}

@@ -19,6 +19,8 @@
 #include "Camera.h"
 
 #include "Mesh.h"
+#include "SceneObject.h"
+#include "Scene.h"
 
 #define GALAXY_VERSION_MAJOR 0
 #define GALAXY_VERSION_MINOR 2
@@ -45,6 +47,14 @@ int main() {
     Galaxy::LOG_TRACE("Using OpenGL: {}", glGetString(GL_VERSION));
     Galaxy::LOG_TRACE("Renderer: {}\n", glGetString(GL_RENDERER));
     
+
+    // Ready to create scene.
+    auto scene = Galaxy::Scene::Get();
+    scene.Init();
+
+
+
+
     // Creating a shader to use 
     Galaxy::Shader shader("Main/Main.vert", "Main/Main.frag");
     // Compiling the shader
@@ -55,14 +65,17 @@ int main() {
     Galaxy::Mesh mario = Galaxy::Mesh::FromObj("Assets/Characters/Mario/Mario.obj", shader);
     mario.AddTexture(new Galaxy::Texture2D("Assets/Characters/Mario/mario_tex.png", 0));
 
+    float fov = 45.0f;
 
-    bool ortho = true;
-    Galaxy::Camera camera;
-    camera.transform.position = glm::vec3(0.0f, 0.0f, -2.0f);
-    //camera.SetOrtho(120.0f, 0.0001f, 1000.0f, window.GetWidth(), window.GetHeight());
-    camera.SetPerspective(90.0f, 0.001f, 100.0f, window.GetWidth(), window.GetHeight());
+    glm::mat4 view;
+    glm::mat4 projection;
+    glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, -2.0f);
+
     glm::mat4 model = glm::mat4(1.0f);
     glm::vec3 pos = glm::vec3(0.0f, 0.0f, 0.0f);
+
+   
+
 
     float rotation = 0.0f;
     double oldTime = glfwGetTime();
@@ -82,28 +95,38 @@ int main() {
             oldTime = currentTime;
         }
         
-        camera.Update(camera.GetMode());
+        
+        view = glm::translate(glm::mat4(1.0f), cameraPos);
 
-        // Make the model rotate
-        model = glm::mat4(1.0f);
-        model = glm::translate(model, pos);
-        model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 1.0f, 0.0f));
-        model = glm::scale(model, glm::vec3(1.0f));
+        projection = glm::perspective(glm::radians(fov), (float)window.GetWidth() / (float)window.GetHeight(), 0.1f, 10.0f);
 
         shader.UseProgram();
         // Transfer our matrices to the shader
-        shader.SetUniformDataMat4f("model", model);
-        shader.SetUniformDataMat4f("view", camera.GetViewMatrix());
-        shader.SetUniformDataMat4f("projection", camera.GetProjectionMatrix());
+        shader.SetUniformDataMat4f("model", mario.GetTransform().GetTransformMatrix());
+        shader.SetUniformDataMat4f("view", view);
+        shader.SetUniformDataMat4f("projection", projection);
 
         shader.SetUniformData1i("albedo", mario.GetTextures()[0]->GetSlot());
         mario.Draw();
   
 
         ImGui::Begin("Galaxy Panel");
-        ImGui::DragFloat3("Mario Position", (float*)&pos, 0.01f);
-        ImGui::DragFloat3("Camera Position", (float*)&camera.transform.position, 0.01f);
-        ImGui::DragFloat("Field Of View", &camera.fov, 0.1f);
+        const ImGuiTreeNodeFlags treeNodeFlags =    ImGuiTreeNodeFlags_DefaultOpen |
+                                                    ImGuiTreeNodeFlags_Framed |
+                                                    ImGuiTreeNodeFlags_SpanAvailWidth |
+                                                    ImGuiTreeNodeFlags_AllowItemOverlap |
+                                                    ImGuiTreeNodeFlags_FramePadding;
+
+        if (ImGui::TreeNodeEx("Transform", treeNodeFlags))
+        {
+            ImGui::DragFloat3("Position", glm::value_ptr(mario.GetTransform().position), 0.01f);
+            ImGui::DragFloat3("Rotation", glm::value_ptr(mario.GetTransform().rotation), 0.01f);
+            ImGui::DragFloat3("Scale", glm::value_ptr(mario.GetTransform().scale), 0.01f);
+            ImGui::TreePop();
+        }
+        
+        ImGui::DragFloat3("Camera Position", (float*)&cameraPos, 0.01f);
+        ImGui::DragFloat("Field Of View", &fov, 0.1f);
         ImGui::End();
 
         ImGui::Render();

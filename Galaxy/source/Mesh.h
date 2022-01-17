@@ -6,11 +6,11 @@
 #include "Texture2D.h"
 #include "Vertex.h"
 #include "VertexArray.h"
-
+#include "SceneObject.h"
 
 namespace Galaxy
 {
-    class Mesh
+    class Mesh : public SceneObject
     {
     protected:
         VertexArray vao;
@@ -19,6 +19,7 @@ namespace Galaxy
         Shader shader;
         std::vector<Texture2D*> textures;
         std::string name;
+
         bool first = true;
     public:
         Mesh(const std::vector<Vertex>& vertices, const Shader& shader, const std::string& name);
