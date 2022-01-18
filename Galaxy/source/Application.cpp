@@ -62,7 +62,7 @@ int main() {
     shader.Link();
     shader.Delete();
 
-    Galaxy::Mesh mario = Galaxy::Mesh::FromObj("Assets/Characters/Mario/Mario.obj", shader);
+    Galaxy::Mesh mario = Galaxy::Mesh::FromObj("Assets/Models/2Cubes.obj", shader);
     mario.AddTexture(new Galaxy::Texture2D("Assets/Characters/Mario/mario_tex.png", 0));
 
     float fov = 45.0f;
