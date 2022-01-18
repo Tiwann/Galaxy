@@ -1,38 +1,40 @@
 #pragma once
 
-#include "Transform.h"
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include "SceneObject.h"
 
 namespace Galaxy 
 {
-
-	enum class CameraMode
+	enum class CameraMode : int
 	{
 		ORTHO = 0,
-		PERSP = 1
+		PERSP = 1,
 	};
 
-	class Camera
+	class Camera : public SceneObject
 	{
-	private:
-		CameraMode mode;
-		float zfar, znear, width, height;
-		glm::mat4 view;
+	protected:
+		float width, height;
+		float znear, zfar;
+		float fov, scale;
 		glm::mat4 projection;
-
+		CameraMode mode;
 	public:
-		Transform transform;
-		float  scale, fov;
-		Camera();
+		Camera(CameraMode mode, float width, float height, 
+			float znear, float zfar, 
+			float fov = 45.0f, float scale = 90.0f) 
+			: mode(mode), width(width), height(height), 
+			znear(znear), zfar(zfar), 
+			fov(fov), scale(scale), projection(glm::mat4(1.0f)) {}
 
-		void SetPerspective(float fov, float znear, float zfar, float width, float height);
-		void SetOrtho(float scale, float znear, float zfar, float width, float height);
-		void Update(const CameraMode& newMode);
+		float& GetFieldOfView() { return fov; }
+		float& GetOrthoScale() { return scale;  }
 
-		// Getters
-		const CameraMode GetMode() const { return mode; }
-		const glm::mat4& GetViewProjMatrix() const { return view * projection; }
-		const glm::mat4& GetViewMatrix() const { return view ; }
-		const glm::mat4& GetProjectionMatrix() const { return projection; }
+		void SetMode(const CameraMode& newMode);
+		const CameraMode& GetMode() const { return mode;  }
+
+		const glm::mat4& GetProjectionMatrix();
 	};
 }
 
