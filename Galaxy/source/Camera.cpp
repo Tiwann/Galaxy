@@ -17,7 +17,7 @@ namespace Galaxy
 		switch (mode)
 		{
 		case CameraMode::ORTHO:
-			projection = glm::ortho(-width / (2 * scale), width / (2 * scale), -height / (2 * scale), height / (2 * scale),
+			projection = glm::ortho(-width / (8 * scale), width / (8 * scale), -height / (8 * scale), height / (8 * scale),
 				znear, zfar);
 			return projection;
 

@@ -81,8 +81,8 @@ int main() {
 
         shader.UseProgram();
         // Transfer our matrices to the shader
-        shader.SetUniformDataMat4f("model", mario.GetTransform().GetTransformMatrix());
-        shader.SetUniformDataMat4f("view", camera.GetTransform().GetTransformMatrix());
+        shader.SetUniformDataMat4f("model", mario.GetTransform().GetTransformMatrix(false));
+        shader.SetUniformDataMat4f("view", camera.GetTransform().GetTransformMatrix(true));
         shader.SetUniformDataMat4f("projection", camera.GetProjectionMatrix());
 
         shader.SetUniformData1i("albedo", mario.GetTextures()[0]->GetSlot());
@@ -101,6 +101,7 @@ int main() {
         {
             if (ImGui::TreeNodeEx("Transform", treeNodeFlags))
             {
+                
                 ImGui::DragFloat3("Position", glm::value_ptr(mario.GetPosition()), 0.01f);
                 ImGui::DragFloat3("Rotation", glm::value_ptr(mario.GetRotation()), 0.01f);
                 ImGui::DragFloat3("Scale", glm::value_ptr(mario.GetScale()), 0.01f);
@@ -132,7 +133,7 @@ int main() {
                     break;
                 case 1:
                     camera.SetMode(Galaxy::CameraMode::PERSP);
-                    ImGui::DragFloat("Field Of View", &camera.GetFieldOfView(), 0.1f);
+                    ImGui::DragFloat("Field Of View", &camera.GetFieldOfView(), 0.1f, 0.0f, 0.0f, "%.1f Degrees");
                     break;
                 }
                 ImGui::TreePop();
