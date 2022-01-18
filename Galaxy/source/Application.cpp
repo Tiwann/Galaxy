@@ -1,4 +1,3 @@
-// ReSharper disable All
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
@@ -20,6 +19,7 @@
 
 #include "Mesh.h"
 #include "SceneObject.h"
+#include "Camera.h"
 #include "Scene.h"
 
 #define GALAXY_VERSION_MAJOR 0
@@ -33,9 +33,10 @@ int main() {
     Galaxy::Window window("Galaxy Renderer", 1280, 720, false, 16);
     if (!window.Check()) return -1;
     
+    // Init ImGui
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
-    auto io = ImGui::GetIO(); (void)io;
+    auto io = ImGui::GetIO();
     ImGui::StyleColorsLight();
     ImGui_ImplGlfw_InitForOpenGL(window.GetWindow(), true);
     ImGui_ImplOpenGL3_Init("#version 460");
@@ -45,7 +46,7 @@ int main() {
     Galaxy::LOG_TRACE("Using GLEW version {}.{}.{}", GLEW_VERSION_MAJOR, GLEW_VERSION_MINOR, GLEW_VERSION_MICRO);
     Galaxy::LOG_TRACE("Using ImGUI version {}", IMGUI_VERSION);
     Galaxy::LOG_TRACE("Using OpenGL: {}", glGetString(GL_VERSION));
-    Galaxy::LOG_TRACE("Renderer: {}\n", glGetString(GL_RENDERER));
+    Galaxy::LOG_TRACE("Using Graphics Card: {}\n", glGetString(GL_RENDERER));
     
 
     // Ready to create scene.
@@ -62,23 +63,12 @@ int main() {
     shader.Link();
     shader.Delete();
 
-    Galaxy::Mesh mario = Galaxy::Mesh::FromObj("Assets/Models/2Cubes.obj", shader);
+    Galaxy::Mesh mario = Galaxy::Mesh::FromObj("Assets/Characters/Mario/Mario.obj", shader);
     mario.AddTexture(new Galaxy::Texture2D("Assets/Characters/Mario/mario_tex.png", 0));
+    mario.GetTransform().Translate(glm::vec3(0.0f, 0.0f, -3.0f));
+    using enum Galaxy::CameraMode;
+    Galaxy::Camera camera(PERSP, (float)window.GetWidth(), (float)window.GetHeight(), 0.01f, 100.0f);
 
-    float fov = 45.0f;
-
-    glm::mat4 view;
-    glm::mat4 projection;
-    glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, -2.0f);
-
-    glm::mat4 model = glm::mat4(1.0f);
-    glm::vec3 pos = glm::vec3(0.0f, 0.0f, 0.0f);
-
-   
-
-
-    float rotation = 0.0f;
-    double oldTime = glfwGetTime();
     while (!window.ShouldClose()) 
     {
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
@@ -88,45 +78,71 @@ int main() {
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
         
-        double currentTime = glfwGetTime();
-        if (currentTime - oldTime >= (1 / 60))
-        {
-            rotation += 0.5f;
-            oldTime = currentTime;
-        }
-        
-        
-        view = glm::translate(glm::mat4(1.0f), cameraPos);
-
-        projection = glm::perspective(glm::radians(fov), (float)window.GetWidth() / (float)window.GetHeight(), 0.1f, 10.0f);
 
         shader.UseProgram();
         // Transfer our matrices to the shader
         shader.SetUniformDataMat4f("model", mario.GetTransform().GetTransformMatrix());
-        shader.SetUniformDataMat4f("view", view);
-        shader.SetUniformDataMat4f("projection", projection);
+        shader.SetUniformDataMat4f("view", camera.GetTransform().GetTransformMatrix());
+        shader.SetUniformDataMat4f("projection", camera.GetProjectionMatrix());
 
         shader.SetUniformData1i("albedo", mario.GetTextures()[0]->GetSlot());
         mario.Draw();
   
 
         ImGui::Begin("Galaxy Panel");
-        const ImGuiTreeNodeFlags treeNodeFlags =    ImGuiTreeNodeFlags_DefaultOpen |
-                                                    ImGuiTreeNodeFlags_Framed |
-                                                    ImGuiTreeNodeFlags_SpanAvailWidth |
-                                                    ImGuiTreeNodeFlags_AllowItemOverlap |
-                                                    ImGuiTreeNodeFlags_FramePadding;
+        const ImGuiTreeNodeFlags treeNodeFlags = ImGuiTreeNodeFlags_DefaultOpen |
+                                                 ImGuiTreeNodeFlags_Framed |
+                                                 ImGuiTreeNodeFlags_SpanAvailWidth |
+                                                 ImGuiTreeNodeFlags_AllowItemOverlap |
+                                                 ImGuiTreeNodeFlags_FramePadding;
+        
 
-        if (ImGui::TreeNodeEx("Transform", treeNodeFlags))
+        if (ImGui::TreeNodeEx("Mario", treeNodeFlags))
         {
-            ImGui::DragFloat3("Position", glm::value_ptr(mario.GetTransform().position), 0.01f);
-            ImGui::DragFloat3("Rotation", glm::value_ptr(mario.GetTransform().rotation), 0.01f);
-            ImGui::DragFloat3("Scale", glm::value_ptr(mario.GetTransform().scale), 0.01f);
+            if (ImGui::TreeNodeEx("Transform", treeNodeFlags))
+            {
+                ImGui::DragFloat3("Position", glm::value_ptr(mario.GetPosition()), 0.01f);
+                ImGui::DragFloat3("Rotation", glm::value_ptr(mario.GetRotation()), 0.01f);
+                ImGui::DragFloat3("Scale", glm::value_ptr(mario.GetScale()), 0.01f);
+                ImGui::TreePop();
+            }        
             ImGui::TreePop();
         }
         
-        ImGui::DragFloat3("Camera Position", (float*)&cameraPos, 0.01f);
-        ImGui::DragFloat("Field Of View", &fov, 0.1f);
+        if (ImGui::TreeNodeEx("Camera", treeNodeFlags))
+        {
+
+            if (ImGui::TreeNodeEx("Transform", treeNodeFlags))
+            {
+                ImGui::DragFloat3("Position", glm::value_ptr(camera.GetPosition()), 0.01f);
+                ImGui::DragFloat3("Rotation", glm::value_ptr(camera.GetRotation()), 0.01f);
+                ImGui::DragFloat3("Scale", glm::value_ptr(camera.GetScale()), 0.01f);
+                ImGui::TreePop();
+            }
+
+            if (ImGui::TreeNodeEx("Parameters", treeNodeFlags))
+            {         
+                const char* items[]{ "Orthographic", "Perspective" };
+                static int selectedItem = (int)camera.GetMode();
+                ImGui::Combo("Camera Mode", &selectedItem, items, IM_ARRAYSIZE(items));
+                switch (selectedItem) {
+                case 0:
+                    camera.SetMode(Galaxy::CameraMode::ORTHO);
+                    ImGui::DragFloat("Orthographic Scale", &camera.GetOrthoScale(), 0.1f);
+                    break;
+                case 1:
+                    camera.SetMode(Galaxy::CameraMode::PERSP);
+                    ImGui::DragFloat("Field Of View", &camera.GetFieldOfView(), 0.1f);
+                    break;
+                }
+                ImGui::TreePop();
+            }
+
+            
+            ImGui::TreePop();
+        }
+
+        
         ImGui::End();
 
         ImGui::Render();
@@ -137,6 +153,8 @@ int main() {
         window.PollEvents();
     }
     
+
+    Galaxy::LOG_TRACE("Shutdown ImGui...");
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
