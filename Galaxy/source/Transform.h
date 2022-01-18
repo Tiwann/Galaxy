@@ -28,7 +28,8 @@ namespace Galaxy
 		glm::vec3& GetPosition() { return position; }
 		glm::vec3& GetRotation() { return rotation; }
 		glm::vec3& GetScale() { return scale; }
-		const glm::mat4& GetTransformMatrix(bool isVew);
+		const glm::mat4& GetTransformMatrix();
+		const glm::mat4& GetViewMatrix();
 	};
 }
 

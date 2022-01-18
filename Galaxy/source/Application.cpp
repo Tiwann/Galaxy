@@ -81,8 +81,8 @@ int main() {
 
         shader.UseProgram();
         // Transfer our matrices to the shader
-        shader.SetUniformDataMat4f("model", mario.GetTransform().GetTransformMatrix(false));
-        shader.SetUniformDataMat4f("view", camera.GetTransform().GetTransformMatrix(true));
+        shader.SetUniformDataMat4f("model", mario.GetTransform().GetTransformMatrix());
+        shader.SetUniformDataMat4f("view", camera.GetViewMatrix());
         shader.SetUniformDataMat4f("projection", camera.GetProjectionMatrix());
 
         shader.SetUniformData1i("albedo", mario.GetTextures()[0]->GetSlot());

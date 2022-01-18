@@ -3,6 +3,7 @@
 
 namespace Galaxy
 {
+	
 	void Transform::Translate(glm::vec3 translation)
 	{
 		position += translation;
@@ -19,13 +20,21 @@ namespace Galaxy
 	}
 
 
-	const glm::mat4& Transform::GetTransformMatrix(bool isView)
+	const glm::mat4& Transform::GetTransformMatrix()
 	{
 		matrix = glm::mat4(1.0f);
+		matrix = glm::translate(matrix, position);
+		matrix = glm::rotate(matrix, glm::radians(rotation.x), glm::vec3(1.0f, 0.0f, 0.0f));
+		matrix = glm::rotate(matrix, glm::radians(rotation.y), glm::vec3(0.0f, 1.0f, 0.0f));
+		matrix = glm::rotate(matrix, glm::radians(rotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
+		matrix = glm::scale(matrix, scale);
+		return matrix;
+	}
 
-		if (isView) matrix = glm::translate(matrix, -position);
-		else		matrix = glm::translate(matrix, position);
-
+	const glm::mat4& Transform::GetViewMatrix()
+	{
+		matrix = glm::mat4(1.0f);
+		matrix = glm::translate(matrix, -position);
 		matrix = glm::rotate(matrix, glm::radians(rotation.x), glm::vec3(1.0f, 0.0f, 0.0f));
 		matrix = glm::rotate(matrix, glm::radians(rotation.y), glm::vec3(0.0f, 1.0f, 0.0f));
 		matrix = glm::rotate(matrix, glm::radians(rotation.z), glm::vec3(0.0f, 0.0f, 1.0f));

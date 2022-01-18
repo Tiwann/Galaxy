@@ -35,6 +35,7 @@ namespace Galaxy
 		const CameraMode& GetMode() const { return mode;  }
 
 		const glm::mat4& GetProjectionMatrix();
+		const glm::mat4& GetViewMatrix();
 	};
 }
 

@@ -28,5 +28,9 @@ namespace Galaxy
 		assert(false);
 		return glm::mat4(1.0f);
 	}
+	const glm::mat4& Camera::GetViewMatrix()
+	{
+		return GetTransform().GetViewMatrix();
+	}
 }
 
