@@ -21,25 +21,36 @@
 #include "SceneObject.h"
 #include "Camera.h"
 #include "Scene.h"
+#include "DetailPanel.h"
+#include "ImGuiStyle.h"
 
 #define GALAXY_VERSION_MAJOR 0
 #define GALAXY_VERSION_MINOR 2
+
+static void Draw()
+{
+
+}
+
 
 int main() {
     Galaxy::Log::Init();
     Galaxy::LOG_TRACE("Welcome to Galaxy Renderer version {}.{}!", GALAXY_VERSION_MAJOR, GALAXY_VERSION_MINOR);
 
     // Creating the window
-    Galaxy::Window window("Galaxy Renderer", 1280, 720, false, 16);
+    Galaxy::Window window("Galaxy Renderer", 1280, 720, true, 16);
     if (!window.Check()) return -1;
     
     // Init ImGui
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
-    auto io = ImGui::GetIO();
-    ImGui::StyleColorsLight();
+    ImGuiIO& io = ImGui::GetIO();
+    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+    Galaxy::SetGuiStyleGalaxy();
+    
     ImGui_ImplGlfw_InitForOpenGL(window.GetWindow(), true);
     ImGui_ImplOpenGL3_Init("#version 460");
+    
 
     // Logging versions
     Galaxy::LOG_TRACE("Using GLFW version {}.{}", GLFW_VERSION_MAJOR, GLFW_VERSION_MINOR);
@@ -50,10 +61,7 @@ int main() {
     
 
     // Ready to create scene.
-    auto scene = Galaxy::Scene::Get();
-    scene.Init();
-
-
+    Galaxy::Scene& scene = Galaxy::Scene::Get();
 
 
     // Creating a shader to use 
@@ -63,12 +71,22 @@ int main() {
     shader.Link();
     shader.Delete();
 
+    // Create a mesh and add it to the scene hierarchy
     Galaxy::Mesh mario = Galaxy::Mesh::FromObj("Assets/Characters/Mario/Mario.obj", shader);
     mario.AddTexture(new Galaxy::Texture2D("Assets/Characters/Mario/mario_tex.png", 0));
     mario.GetTransform().Translate(glm::vec3(0.0f, 0.0f, -3.0f));
+
+    Galaxy::Mesh minecraft = Galaxy::Mesh::FromObj("Assets/Models/cube.obj", shader);
+    minecraft.AddTexture(new Galaxy::Texture2D("Assets/Textures/minecraft_sand.png", 0));
+    minecraft.GetTransform().Translate(glm::vec3(2.0f, 0.0f, -3.0f));
+    minecraft.Rename("Cube");
+
     using enum Galaxy::CameraMode;
     Galaxy::Camera camera(PERSP, (float)window.GetWidth(), (float)window.GetHeight(), 0.01f, 100.0f);
 
+    
+
+   
     while (!window.ShouldClose()) 
     {
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
@@ -77,74 +95,27 @@ int main() {
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
-        
+
 
         shader.UseProgram();
         // Transfer our matrices to the shader
-        shader.SetUniformDataMat4f("model", mario.GetTransform().GetTransformMatrix());
         shader.SetUniformDataMat4f("view", camera.GetViewMatrix());
         shader.SetUniformDataMat4f("projection", camera.GetProjectionMatrix());
 
+        // Set transform data to shader and render mario
+        shader.SetUniformDataMat4f("model", mario.GetTransform().GetTransformMatrix());
         shader.SetUniformData1i("albedo", mario.GetTextures()[0]->GetSlot());
         mario.Draw();
-  
 
-        ImGui::Begin("Galaxy Panel");
-        const ImGuiTreeNodeFlags treeNodeFlags = ImGuiTreeNodeFlags_DefaultOpen |
-                                                 ImGuiTreeNodeFlags_Framed |
-                                                 ImGuiTreeNodeFlags_SpanAvailWidth |
-                                                 ImGuiTreeNodeFlags_AllowItemOverlap |
-                                                 ImGuiTreeNodeFlags_FramePadding;
-        
+        // Set transform data to shader and render mincraft cube
+        shader.SetUniformDataMat4f("model", minecraft.GetTransform().GetTransformMatrix());
+        shader.SetUniformData1i("albedo", minecraft.GetTextures()[0]->GetSlot());
+        minecraft.Draw();
 
-        if (ImGui::TreeNodeEx("Mario", treeNodeFlags))
-        {
-            if (ImGui::TreeNodeEx("Transform", treeNodeFlags))
-            {
-                
-                ImGui::DragFloat3("Position", glm::value_ptr(mario.GetPosition()), 0.01f);
-                ImGui::DragFloat3("Rotation", glm::value_ptr(mario.GetRotation()), 0.01f);
-                ImGui::DragFloat3("Scale", glm::value_ptr(mario.GetScale()), 0.01f);
-                ImGui::TreePop();
-            }        
-            ImGui::TreePop();
-        }
-        
-        if (ImGui::TreeNodeEx("Camera", treeNodeFlags))
-        {
 
-            if (ImGui::TreeNodeEx("Transform", treeNodeFlags))
-            {
-                ImGui::DragFloat3("Position", glm::value_ptr(camera.GetPosition()), 0.01f);
-                ImGui::DragFloat3("Rotation", glm::value_ptr(camera.GetRotation()), 0.01f);
-                ImGui::DragFloat3("Scale", glm::value_ptr(camera.GetScale()), 0.01f);
-                ImGui::TreePop();
-            }
+        Galaxy::Scene::Get().OnGuiRender(ImGui::GetIO());
+        Galaxy::DetailPanel::Get().OnGuiRender(ImGui::GetIO());
 
-            if (ImGui::TreeNodeEx("Parameters", treeNodeFlags))
-            {         
-                const char* items[]{ "Orthographic", "Perspective" };
-                static int selectedItem = (int)camera.GetMode();
-                ImGui::Combo("Camera Mode", &selectedItem, items, IM_ARRAYSIZE(items));
-                switch (selectedItem) {
-                case 0:
-                    camera.SetMode(Galaxy::CameraMode::ORTHO);
-                    ImGui::DragFloat("Orthographic Scale", &camera.GetOrthoScale(), 0.1f);
-                    break;
-                case 1:
-                    camera.SetMode(Galaxy::CameraMode::PERSP);
-                    ImGui::DragFloat("Field Of View", &camera.GetFieldOfView(), 0.1f, 0.0f, 0.0f, "%.1f Degrees");
-                    break;
-                }
-                ImGui::TreePop();
-            }
-
-            
-            ImGui::TreePop();
-        }
-
-        
-        ImGui::End();
 
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -155,12 +126,12 @@ int main() {
     }
     
 
-    Galaxy::LOG_TRACE("Shutdown ImGui...");
+    Galaxy::LOG_TRACE("[IMGUI] Shutdown ImGui...");
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
 
-    Galaxy::LOG_TRACE("Closing application...");
+    Galaxy::LOG_TRACE("[APP] Closing application...");
     glfwTerminate();
     return 0;
 }

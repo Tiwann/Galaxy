@@ -13,6 +13,8 @@ namespace Galaxy {
         GLFWwindow* window;
         inline static Window* instance = nullptr;
         int width, height;
+        bool focus;
+        bool miximized;
     public:
         Window(std::string title, const int width, const int height, bool resizable = true, int samples = 4);
 
@@ -34,5 +36,14 @@ namespace Galaxy {
         const int GetHeight()               const { return height; }
         const float GetAspectRatio()        const { return (float)width / (float)height; }
 
+
+        //Callbacks
+        static void OnFramebufferResize(GLFWwindow* window, int width, int height);
+        static void OnWindowResize(GLFWwindow* window, int width, int height);
+        static void OnMaximize(GLFWwindow* window, int maximized);
+        static void OnFocus(GLFWwindow* window, int focused);
+        static void OnMove(GLFWwindow* window, int xpos, int ypos);
+        static void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
+        static void MouseCallback(GLFWwindow* window, int button, int action, int mods);
     };
 }

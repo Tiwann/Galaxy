@@ -7,6 +7,7 @@
 
 namespace Galaxy
 {
+	
 	void Camera::SetMode(const CameraMode& newMode)
 	{
 		if (mode != newMode) mode = newMode;
@@ -31,6 +32,32 @@ namespace Galaxy
 	const glm::mat4& Camera::GetViewMatrix()
 	{
 		return GetTransform().GetViewMatrix();
+	}
+
+	void Camera::OnGuiRender(const ImGuiIO& io)
+	{
+		SceneObject::OnGuiRender(io);
+
+		if (GetSelected())
+		{
+			if (ImGui::TreeNodeEx("Parameters", treeNodeFlags))
+			{
+				const char* items[]{ "Orthographic", "Perspective" };
+				static int selectedItem = (int)GetMode();
+				ImGui::Combo("Camera Mode", &selectedItem, items, IM_ARRAYSIZE(items));
+				switch (selectedItem) {
+				case 0:
+					SetMode(Galaxy::CameraMode::ORTHO);
+					ImGui::DragFloat("Orthographic Scale", &GetOrthoScale(), 0.1f);
+					break;
+				case 1:
+					SetMode(Galaxy::CameraMode::PERSP);
+					ImGui::DragFloat("Field Of View", &GetFieldOfView(), 0.1f, 0.0f, 0.0f, "%.1f Degrees");
+					break;
+				}
+				ImGui::TreePop();
+			}
+		}
 	}
 }
 

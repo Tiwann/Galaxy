@@ -4,6 +4,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include "SceneObject.h"
 
+
+
 namespace Galaxy 
 {
 	enum class CameraMode : int
@@ -23,14 +25,15 @@ namespace Galaxy
 	public:
 		Camera(CameraMode mode, float width, float height, 
 			float znear, float zfar, 
-			float fov = 45.0f, float scale = 90.0f) 
+			float fov = 45.0f, float scale = 45.0f) 
 			: mode(mode), width(width), height(height), 
 			znear(znear), zfar(zfar), 
-			fov(fov), scale(scale), projection(glm::mat4(1.0f)) {}
+			fov(fov), scale(scale), projection(glm::mat4(1.0f)), SceneObject(false, "Camera") {}
 
 		float& GetFieldOfView() { return fov; }
 		float& GetOrthoScale() { return scale;  }
 
+		virtual void OnGuiRender(const ImGuiIO& io) override;
 		void SetMode(const CameraMode& newMode);
 		const CameraMode& GetMode() const { return mode;  }
 

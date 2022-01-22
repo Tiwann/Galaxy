@@ -1,10 +1,11 @@
 ﻿#include "Window.h"
 #include "Log.h"
+#include "Input.h"
 #include <stb/stb_image.h>
 
 namespace Galaxy {
     Window::Window(std::string title, const int width, const int height, bool resizable, int samples)
-        : window(nullptr), width(width), height(height)
+        : window(nullptr), width(width), height(height), focus(false), miximized(false)
     {
         if (instance != nullptr)
         {
@@ -28,8 +29,15 @@ namespace Galaxy {
         int ch;
         icon.pixels = stbi_load("Assets/icon48x48.png", &icon.width, &icon.height, &ch, 0);
         glfwSetWindowIcon(window, 1, &icon);
+        glfwSetFramebufferSizeCallback(window, Window::OnFramebufferResize);
+        glfwSetWindowSizeCallback(window, Window::OnWindowResize);
+        glfwSetWindowFocusCallback(window, Window::OnFocus);
+        glfwSetWindowMaximizeCallback(window, Window::OnMaximize);
+        glfwSetKeyCallback(window, Window::KeyCallback);
+        glfwSetMouseButtonCallback(window, Window::MouseCallback);
     }
 
+    
     bool Window::Check()
     {
         if (!window) {
@@ -49,6 +57,45 @@ namespace Galaxy {
         glEnable(GL_DEPTH_TEST);
         
         return true;
+    }
+
+    void Window::OnFramebufferResize(GLFWwindow* window, int width, int height)
+    {
+        LOG_TRACE("[OPENGL] Framebuffer resized: ({}, {})", width, height);
+        glViewport(0, 0, width, height);
+    }
+
+    void Window::OnWindowResize(GLFWwindow* window, int width, int height)
+    {
+        
+    }
+
+    void Window::OnMaximize(GLFWwindow* window, int maximized)
+    {
+        if (maximized)
+            LOG_TRACE("[WINDOW] Window maximized");
+
+    }
+    void Window::OnFocus(GLFWwindow* window, int focused)
+    {
+        if (focused) LOG_TRACE("[WINDOW] Focusing window.");
+        else LOG_TRACE("[WINDOW] Losing focus on window.");
+    }
+
+    void Window::OnMove(GLFWwindow* window, int xpos, int ypos)
+    {
+        LOG_TRACE("[WINDOW] Moving window: ({}, {})", xpos, ypos);
+    }
+
+    void Window::KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
+    {
+        LOG_TRACE("[WINDOW] Key Callback: {}, {}, {}, {}", key, scancode, action, mods);
+        
+    }
+
+    void Window::MouseCallback(GLFWwindow* window, int button, int action, int mods)
+    {
+        LOG_TRACE("[WINDOW] Mouse Button Callback: {}, {}, {}", button, action, mods);
     }
 }
 

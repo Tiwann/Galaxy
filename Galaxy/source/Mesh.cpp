@@ -7,8 +7,8 @@
 namespace Galaxy
 {
 
-    Mesh::Mesh(const std::vector<Vertex>& vertices, const Shader& shader, const std::string& name = "Mesh")
-        : vao(VertexArray()), vbo(VertexBuffer()),  vertices(vertices), shader(shader), name(name), SceneObject()
+    Mesh::Mesh(const std::vector<Vertex>& vertices, const Shader& shader, const std::string& name)
+        : vao(VertexArray()), vbo(VertexBuffer()),  vertices(vertices), shader(shader), SceneObject(canHaveChilds, name)
     {
         vao.Bind();
         vbo.Bind();
