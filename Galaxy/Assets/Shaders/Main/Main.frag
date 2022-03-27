@@ -1,19 +1,30 @@
 #version 460 core
 
+in vec3 position;
 in vec4 vcolor;
 in vec2 texcoord;
 in vec3 normal;
 out vec4 color;
 
-uniform sampler2D albedo;
+uniform vec3 lightPos;
+uniform vec4 lightColor;
+uniform vec3 cameraPos;
+
+uniform sampler2D albedoMap;
+uniform sampler2D specularMap;
+uniform sampler2D normalMap;
 
 void main() {
-    //output albedo color
-    color = texture(albedo, texcoord);
+    
+    vec4 albedo = texture(albedoMap, texcoord);
+    float ambient = 0.1;
 
-    //output normals;
-    //color = vec4(normal, 1.0);
-
-    //output texture coordinates;
-    //color = vec4(texcoord, 0.0, 1.0);
+    vec4 normalTex = texture(normalMap, texcoord);
+    vec4 specular = texture(specularMap, texcoord);
+    
+    vec3 nrm = mix(normalize(normal), normalTex.xyz, 0.5);
+    vec3 lightDir = normalize(lightPos - position);
+    float diffuse = max(dot(lightDir, nrm), 0.0);
+   
+    color = albedo * (lightColor + ambient);
 }
