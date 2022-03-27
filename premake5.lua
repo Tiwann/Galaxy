@@ -3,8 +3,6 @@ workspace "GalaxyRenderer"
     startproject "Galaxy"
     configurations { "Debug", "Release" }
     flags "MultiProcessorCompile"
-    require "cmake/cmake"
-    require "clion/clion"
 
 bindir = "Binaries/%{cfg.system}-%{cfg.architecture}-%{cfg.buildcfg}"
 intermediatedir = "Intermediate/%{cfg.system}-%{cfg.architecture}-%{cfg.buildcfg}"
@@ -60,8 +58,8 @@ project "GalaxyRenderer"
 
     includedirs
     {
-        "GLFW/include",
-        "GLAD/include",
+        "Vendor/GLFW/include",
+        "Vendor/GLAD/include",
         "%{prj.location}/External/glm",
         "%{prj.location}/External/spdlog/include",
         "%{prj.location}/External/stb",
@@ -94,7 +92,7 @@ project "GalaxyRenderer"
         optimize "on"
 
 project "GLFW"
-    location "GLFW"
+    location "Vendor/GLFW"
     kind "StaticLib"
     language "C"
 
@@ -198,7 +196,7 @@ project "GLFW"
 
 
 project "GLAD"
-    location "GLAD"
+    location "Vendor/GLAD"
     kind "StaticLib"
     language "C"
     staticruntime "on"
